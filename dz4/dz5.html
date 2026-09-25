@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ДЗ 10-11 • Движение по окружности</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <!-- KaTeX для формул -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="initMath()"></script>
+
+  <style>
+    :root {
+      --bg-main: #090a10;
+      --surface-card: rgba(18, 22, 34, 0.72);
+      --surface-elevated: rgba(26, 32, 48, 0.85);
+      --surface-input: rgba(13, 16, 26, 0.7);
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
+      
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+      
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.2);
+      --error: #f43f5e;
+      --error-glow: rgba(244, 63, 94, 0.2);
+      
+      --border: rgba(255, 255, 255, 0.08);
+      --radius-xl: 24px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      
+      --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg-main);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 20%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(236, 72, 153, 0.07) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-top: 40px;
+      padding-bottom: 140px;
+      overflow-x: hidden;
+    }
+
+    /* Главный контейнер */
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      padding: 5px 16px;
+      border-radius: 30px;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-sub);
+    }
+
+    /* Карточки задач */
+    .card {
+      background: var(--surface-card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      padding: 32px;
+      margin-bottom: 28px;
+      transition: transform 0.35s var(--ease-spring), box-shadow 0.35s var(--ease-spring), border-color 0.35s var(--ease-spring);
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 28px 50px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .task-num {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      padding: 4px 12px;
+      border-radius: 30px;
+      margin-bottom: 16px;
+    }
+
+    .task-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.55;
+      margin-bottom: 14px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 4px;
+    }
+
+    .task-desc {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-sub);
+      margin-bottom: 14px;
+    }
+
+    /* Блоки с картинками */
+    .task-image-box {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin: 16px 0 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .task-image-box img {
+      max-width: 100%;
+      max-height: 250px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .img-caption {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    /* Поля ввода и кнопки */
+    .input-action-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .input-text {
+      flex: 1;
+      min-width: 200px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface-input);
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .input-text:focus {
+      border-color: var(--accent);
+      background: rgba(20, 26, 42, 0.9);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .btn-main {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 14px 26px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+      box-shadow: 0 4px 18px var(--accent-glow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4);
+      filter: brightness(1.1);
+    }
+
+    .btn-main:active {
+      transform: scale(0.97);
+    }
+
+    /* Кнопки вариантов ответов */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .options-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn-option {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .options-vertical .btn-option {
+      justify-content: flex-start;
+      text-align: left;
+      padding: 14px 20px;
+    }
+
+    .btn-option:hover:not(:disabled) {
+      background: rgba(45, 55, 80, 0.95);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-option:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .btn-option.correct {
+      background: var(--success) !important;
+      border-color: var(--success) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 24px var(--success-glow) !important;
+    }
+
+    .btn-option.incorrect {
+      background: var(--error) !important;
+      border-color: var(--error) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 24px var(--error-glow) !important;
+    }
+
+    /* Уведомления и решение */
+    .status-msg {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 700;
+      animation: smoothSlideIn 0.35s var(--ease-spring) forwards;
+    }
+
+    .status-msg.correct {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .status-msg.incorrect {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(244, 63, 94, 0.1);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.25);
+    }
+
+    .btn-solution {
+      display: none;
+      margin-top: 14px;
+      background: rgba(244, 63, 94, 0.08);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      padding: 11px 22px;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .btn-solution:hover {
+      background: rgba(244, 63, 94, 0.16);
+      border-color: #f43f5e;
+      transform: translateY(-1px);
+    }
+
+    /* Блок решения с полной адаптивностью */
+    .solution-box {
+      display: none;
+      margin-top: 18px;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: var(--radius-lg);
+      border-left: 4px solid var(--accent);
+      border-right: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 22px 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.75;
+      color: #e2e8f0;
+      animation: smoothSlideIn 0.4s var(--ease-spring) forwards;
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .solution-box strong {
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .solution-box p, .solution-box div {
+      margin-bottom: 10px;
+    }
+
+    .solution-box ol, .solution-box ul {
+      margin-left: 22px;
+      margin-bottom: 12px;
+    }
+
+    .solution-box li {
+      margin-bottom: 6px;
+    }
+
+    .math-scroll {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 10px 0;
+      margin: 8px 0;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .math-scroll::-webkit-scrollbar,
+    .task-title::-webkit-scrollbar,
+    .solution-box::-webkit-scrollbar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .math-scroll::-webkit-scrollbar-thumb,
+    .task-title::-webkit-scrollbar-thumb,
+    .solution-box::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 10px;
+    }
+
+    .katex-display {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 8px 0;
+      margin: 6px 0 !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .katex-display::-webkit-scrollbar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .katex-display::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 10px;
+    }
+
+    @keyframes smoothSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <div class="hero">
+      <div class="hero-badge">ДЗ 10-11</div>
+      <h1>Движение по окружности</h1>
+      <p>Выберите вариант ответа или введите полученное числовое значение.</p>
+    </div>
+
+    <!-- Задача 1 (А1) -->
+    <div class="card" id="task-1">
+      <div class="task-num">Задача 1</div>
+      <div class="task-title">Если за промежуток времени $\Delta t = 2{,}0\text{ мин}$ колесо совершило $N = 600$ полных оборотов, то частота $\nu$ его вращения равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(1, '1', this)">1) $2{,}0 \cdot 10^{-1}\text{ с}^{-1}$</button>
+        <button class="btn-option" onclick="handleChoice(1, '2', this)">2) $5{,}0\text{ с}^{-1}$</button>
+        <button class="btn-option" onclick="handleChoice(1, '3', this)">3) $20\text{ с}^{-1}$</button>
+        <button class="btn-option" onclick="handleChoice(1, '4', this)">4) $3{,}0 \cdot 10^2\text{ с}^{-1}$</button>
+        <button class="btn-option" onclick="handleChoice(1, '5', this)">5) $3{,}3 \cdot 10^2\text{ с}^{-1}$</button>
+      </div>
+      <div class="status-msg" id="status-1"></div>
+      <button class="btn-solution" id="btn-sol-1" onclick="toggleSolution(1)">Показать Решение</button>
+      <div class="solution-box" id="sol-1">
+        <p>Частота вращения колеса:</p>
+        <div class="math-scroll">
+          $$\nu = \frac{N}{\Delta t} = \frac{600}{120\text{ с}} = 5{,}0\text{ с}^{-1}.$$
+        </div>
+        <strong>Ответ:</strong> вариант 2 ($5{,}0\text{ с}^{-1}$).
+      </div>
+    </div>
+
+    <!-- Задача 2 (А16) -->
+    <div class="card" id="task-2">
+      <div class="task-num">Задача 2</div>
+      <div class="task-title">Материальная точка вращается по окружности радиусом $R = 60\text{ см}$ с угловой скоростью, модуль которой $\omega = 2{,}5\text{ }\frac{\text{рад}}{\text{с}}$. Если модуль её линейной скорости $v$ постоянный, то он равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(2, '1', this)">1) $1{,}5\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(2, '2', this)">2) $2{,}1\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(2, '3', this)">3) $4{,}2\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(2, '4', this)">4) $8{,}4\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(2, '5', this)">5) $15\text{ }\frac{\text{м}}{\text{с}}$</button>
+      </div>
+      <div class="status-msg" id="status-2"></div>
+      <button class="btn-solution" id="btn-sol-2" onclick="toggleSolution(2)">Показать Решение</button>
+      <div class="solution-box" id="sol-2">
+        <p>Для нахождения модуля линейной скорости $v$ воспользуемся связью между линейной и угловой скоростями:</p>
+        <div class="math-scroll">
+          $$v = \omega \cdot R$$
+        </div>
+        <p>Подставим значения из условия:</p>
+        <div class="math-scroll">
+          $$v = 2{,}5\text{ }\frac{\text{рад}}{\text{с}} \cdot 0{,}6\text{ м} = 1{,}5\text{ }\frac{\text{м}}{\text{с}}$$
+        </div>
+        <strong>Ответ:</strong> вариант 1 ($1{,}5\text{ м/с}$).
+      </div>
+    </div>
+
+    <!-- Задача 3 (№4) -->
+    <div class="card" id="task-3">
+      <div class="task-num">Задача 3</div>
+      <div class="task-title">Если период обращения точек обода колеса уменьшить в $n = 3$ раза, то модуль центростремительного ускорения точек:</div>
+      <div class="options-vertical">
+        <button class="btn-option" onclick="handleChoice(3, '1', this)">1) уменьшится в 3 раза</button>
+        <button class="btn-option" onclick="handleChoice(3, '2', this)">2) уменьшится в 9 раз</button>
+        <button class="btn-option" onclick="handleChoice(3, '3', this)">3) увеличится в 3 раза</button>
+        <button class="btn-option" onclick="handleChoice(3, '4', this)">4) увеличится в 9 раз</button>
+        <button class="btn-option" onclick="handleChoice(3, '5', this)">5) не изменится</button>
+      </div>
+      <div class="status-msg" id="status-3"></div>
+      <button class="btn-solution" id="btn-sol-3" onclick="toggleSolution(3)">Показать Решение</button>
+      <div class="solution-box" id="sol-3">
+        <p><strong>Формула ускорения:</strong></p>
+        <div class="math-scroll">
+          $$a = \frac{v^2}{R}$$
+        </div>
+        <p><strong>Связь скорости с периодом:</strong><br/>
+        Линейная скорость $v$ — это длина окружности, деленная на период $T$:</p>
+        <div class="math-scroll">
+          $$v = \frac{2\pi R}{T}$$
+        </div>
+        <p>Связь ускорения $a$ с периодом $T$ и радиусом $R$ имеет вид:</p>
+        <div class="math-scroll">
+          $$a = \frac{4\pi^2 R}{T^2}$$
+        </div>
+        <p>Период уменьшили в <strong>3 раза</strong> $\left(T' = \frac{T}{3}\right)$.<br/>
+        Знаменатель уменьшится в $3^2 = \mathbf{9\text{ раз}}$.<br/>
+        Дробь и само ускорение <strong>увеличатся в 9 раз</strong>.</p>
+        <strong>Ответ:</strong> вариант 4 (увеличится в 9 раз).
+      </div>
+    </div>
+
+    <!-- Задача 4 (А3) -->
+    <div class="card" id="task-4">
+      <div class="task-num">Задача 4</div>
+      <div class="task-title">Если в верхней точке выпуклого моста радиусом $R = 40\text{ м}$ модуль центростремительного ускорения автомобиля $a = 8{,}1\text{ }\frac{\text{м}}{\text{с}^2}$, то модуль скорости $v$ движения автомобиля в верхней точке моста равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(4, '1', this)">1) $10\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(4, '2', this)">2) $15\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(4, '3', this)">3) $16\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(4, '4', this)">4) $18\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(4, '5', this)">5) $24\text{ }\frac{\text{м}}{\text{с}}$</button>
+      </div>
+      <div class="status-msg" id="status-4"></div>
+      <button class="btn-solution" id="btn-sol-4" onclick="toggleSolution(4)">Показать Решение</button>
+      <div class="solution-box" id="sol-4">
+        <p>Из формулы $a = \frac{v^2}{R}$ найдем модуль скорости движения автомобиля:</p>
+        <div class="math-scroll">
+          $$v = \sqrt{aR} = \sqrt{8{,}1 \cdot 40} = \sqrt{324} = 18\text{ }\frac{\text{м}}{\text{с}}.$$
+        </div>
+        <strong>Ответ:</strong> вариант 4 ($18\text{ м/с}$).
+      </div>
+    </div>
+
+    <!-- Задача 5 (А4) -> image1.png -->
+    <div class="card" id="task-5">
+      <div class="task-num">Задача 5</div>
+      <div class="task-title">На рисунке 21 показана схема гоночной автотрассы. Модули линейных скоростей движения автомобиля в точках $A$, $B$ и $C$ одинаковы. Модули ускорений автомобиля в этих точках связаны соотношением:</div>
+      <div class="task-image-box">
+        <img src="image1.png" alt="Рис. 21" onerror="this.src='https://via.placeholder.com/350x200?text=image1.png';" />
+        <div class="img-caption">Рис. 21</div>
+      </div>
+      <div class="options-vertical">
+        <button class="btn-option" onclick="handleChoice(5, '1', this)">1) $a_A = a_B = a_C$</button>
+        <button class="btn-option" onclick="handleChoice(5, '2', this)">2) $a_A = a_C < a_B$</button>
+        <button class="btn-option" onclick="handleChoice(5, '3', this)">3) $a_C > a_A > a_B$</button>
+        <button class="btn-option" onclick="handleChoice(5, '4', this)">4) $a_A < a_C < a_B$</button>
+        <button class="btn-option" onclick="handleChoice(5, '5', this)">5) $a_C < a_A < a_B$</button>
+      </div>
+      <div class="status-msg" id="status-5"></div>
+      <button class="btn-solution" id="btn-sol-5" onclick="toggleSolution(5)">Показать Решение</button>
+      <div class="solution-box" id="sol-5">
+        <p>При постоянном модуле линейной скорости движения автомобиля модуль центростремительного ускорения обратно пропорционален радиусу окружности. Поэтому $a_A < a_C < a_B$.</p>
+        <strong>Ответ:</strong> вариант 4 ($a_A < a_C < a_B$).
+      </div>
+    </div>
+
+    <!-- Задача 6 (А5) -->
+    <div class="card" id="task-6">
+      <div class="task-num">Задача 6</div>
+      <div class="task-title">Две материальные точки движутся по окружностям диаметрами $d_1$ и $d_2 = 4d_1$. Если периоды вращения точек равны, то отношение модулей центростремительных ускорений точек $\frac{a_1}{a_2}$ равно:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(6, '1', this)">1) 0,25</button>
+        <button class="btn-option" onclick="handleChoice(6, '2', this)">2) 0,5</button>
+        <button class="btn-option" onclick="handleChoice(6, '3', this)">3) 2</button>
+        <button class="btn-option" onclick="handleChoice(6, '4', this)">4) 4</button>
+        <button class="btn-option" onclick="handleChoice(6, '5', this)">5) 16</button>
+      </div>
+      <div class="status-msg" id="status-6"></div>
+      <button class="btn-solution" id="btn-sol-6" onclick="toggleSolution(6)">Показать Решение</button>
+      <div class="solution-box" id="sol-6">
+        <p><strong>1. Формула ускорения через период:</strong><br/>
+        Центростремительное ускорение связано с периодом обращения $T$ и диаметром окружности $d$ формулой:</p>
+        <div class="math-scroll">
+          $$a = \omega^2 R = \left(\frac{2\pi}{T}\right)^2 \frac{d}{2} = \frac{2\pi^2 d}{T^2}$$
+        </div>
+        <p><strong>2. Нахождение отношения:</strong><br/>
+        Так как периоды вращения точек одинаковы ($T_1 = T_2$), то ускорение прямо пропорционально диаметру окружности:</p>
+        <div class="math-scroll">
+          $$\frac{a_1}{a_2} = \frac{d_1}{d_2}$$
+        </div>
+        <p>По условию $d_2 = 4d_1$, следовательно:</p>
+        <div class="math-scroll">
+          $$\frac{a_1}{a_2} = \frac{d_1}{4d_1} = 0{,}25$$
+        </div>
+        <strong>Ответ:</strong> вариант 1 (0,25).
+      </div>
+    </div>
+
+    <!-- Задача 7 (А6) -->
+    <div class="card" id="task-7">
+      <div class="task-num">Задача 7</div>
+      <div class="task-title">Радиус равномерно вращающегося колеса комбайна в $n = 2$ раза больше радиуса равномерно вращающегося колеса трактора. Если частота вращения колеса комбайна в $k = 4$ раза меньше частоты вращения колеса трактора, то отношение модулей линейных скоростей $\frac{v_{\text{т}}}{v_{\text{к}}}$ крайних точек колеса трактора ($v_{\text{т}}$) и колеса комбайна ($v_{\text{к}}$) относительно осей этих колес равно:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(7, '1', this)">1) $\frac{1}{4}$</button>
+        <button class="btn-option" onclick="handleChoice(7, '2', this)">2) $\frac{1}{2}$</button>
+        <button class="btn-option" onclick="handleChoice(7, '3', this)">3) 1</button>
+        <button class="btn-option" onclick="handleChoice(7, '4', this)">4) 2</button>
+        <button class="btn-option" onclick="handleChoice(7, '5', this)">5) 4</button>
+      </div>
+      <div class="status-msg" id="status-7"></div>
+      <button class="btn-solution" id="btn-sol-7" onclick="toggleSolution(7)">Показать Решение</button>
+      <div class="solution-box" id="sol-7">
+        <p><strong>1. Запись условий:</strong></p>
+        <ul>
+          <li>Радиус колеса комбайна: $R_{\text{к}} = 2R_{\text{т}}$</li>
+          <li>Частота колеса трактора: $\nu_{\text{т}} = 4\nu_{\text{к}}$</li>
+        </ul>
+        <p><strong>2. Формула линейной скорости:</strong><br/>
+        Линейная скорость точек на окружности определяется как:</p>
+        <div class="math-scroll">
+          $$v = 2\pi\nu R$$
+        </div>
+        <p><strong>3. Нахождение отношения скорости трактора к комбайну:</strong></p>
+        <div class="math-scroll">
+          $$\frac{v_{\text{т}}}{v_{\text{к}}} = \frac{2\pi\nu_{\text{т}}R_{\text{т}}}{2\pi\nu_{\text{к}}R_{\text{к}}} = \frac{\nu_{\text{т}}}{\nu_{\text{к}}} \cdot \frac{R_{\text{т}}}{R_{\text{к}}}$$
+          $$\frac{v_{\text{т}}}{v_{\text{к}}} = 4 \cdot \frac{1}{2} = 2$$
+        </div>
+        <strong>Ответ:</strong> вариант 4 (2).
+      </div>
+    </div>
+
+    <!-- Задача 8 (А9) -->
+    <div class="card" id="task-8">
+      <div class="task-num">Задача 8</div>
+      <div class="task-title">Сверло дрели вращается с угловой скоростью $\omega = 300\text{ }\frac{\text{рад}}{\text{с}}$. Если модуль линейной скорости точек сверла, движущихся с максимальной скоростью, $v_{\text{max}} = 72\text{ }\frac{\text{м}}{\text{мин}}$, то модуль центростремительного ускорения $a_{\text{max}}$ этих точек равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(8, '1', this)">1) $0{,}25\text{ }\frac{\text{км}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(8, '2', this)">2) $0{,}36\text{ }\frac{\text{км}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(8, '3', this)">3) $0{,}54\text{ }\frac{\text{км}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(8, '4', this)">4) $12\text{ }\frac{\text{км}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(8, '5', this)">5) $22\text{ }\frac{\text{км}}{\text{с}^2}$</button>
+      </div>
+      <div class="status-msg" id="status-8"></div>
+      <button class="btn-solution" id="btn-sol-8" onclick="toggleSolution(8)">Показать Решение</button>
+      <div class="solution-box" id="sol-8">
+        <p>Поскольку в одной минуте 60 секунд:</p>
+        <div class="math-scroll">
+          $$v_{\text{max}} = 72\text{ }\frac{\text{м}}{\text{мин}} = \frac{72}{60}\text{ м/с} = 1{,}2\text{ м/с}$$
+        </div>
+        <p>Связь между ускорением, угловой и линейной скоростью выражается формулой:</p>
+        <div class="math-scroll">
+          $$a_{\text{max}} = \omega \cdot v_{\text{max}}$$
+          $$a_{\text{max}} = 300\text{ рад/с} \cdot 1{,}2\text{ м/с} = 360\text{ м/с}^2$$
+          $$a_{\text{max}} = \frac{360}{1000}\text{ км/с}^2 = 0{,}36\text{ км/с}^2$$
+        </div>
+        <strong>Ответ:</strong> вариант 2 ($0{,}36\text{ км/с}^2$).
+      </div>
+    </div>
+
+    <!-- Задача 9 (А12) -> image2.png -->
+    <div class="card" id="task-9">
+      <div class="task-num">Задача 9</div>
+      <div class="task-title">Модули линейных скоростей точек $A$ и $B$ (рис. 22), расположенных на поверхности горизонтального диска, вращающегося с постоянной частотой вокруг вертикальной оси, проходящей через центр диска, $v_A = 9{,}42\text{ }\frac{\text{м}}{\text{с}}$ и $v_B = 6{,}28\text{ }\frac{\text{м}}{\text{с}}$ соответственно. Если частота вращения диска $\nu = 2{,}0\text{ с}^{-1}$, то расстояние $AB$ равно:</div>
+      <div class="task-image-box">
+        <img src="image2.png" alt="Рис. 22" onerror="this.src='https://via.placeholder.com/350x220?text=image2.png';" />
+        <div class="img-caption">Рис. 22</div>
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(9, '1', this)">1) 0,79 м</button>
+        <button class="btn-option" onclick="handleChoice(9, '2', this)">2) 0,31 м</button>
+        <button class="btn-option" onclick="handleChoice(9, '3', this)">3) 0,25 м</button>
+        <button class="btn-option" onclick="handleChoice(9, '4', this)">4) 0,16 м</button>
+        <button class="btn-option" onclick="handleChoice(9, '5', this)">5) 0,090 м</button>
+      </div>
+      <div class="status-msg" id="status-9"></div>
+      <button class="btn-solution" id="btn-sol-9" onclick="toggleSolution(9)">Показать Решение</button>
+      <div class="solution-box" id="sol-9">
+        <p>Линейная скорость точки на вращающемся диске связана с частотой вращения $\nu$ и радиусом $R$ формулой:</p>
+        <div class="math-scroll">
+          $$v = 2\pi\nu R \implies R = \frac{v}{2\pi\nu}$$
+        </div>
+        <p>Радиус точки $A$:</p>
+        <div class="math-scroll">
+          $$R_A = \frac{v_A}{2\pi\nu} = \frac{9{,}42}{2 \cdot 3{,}14 \cdot 2{,}0} = \frac{9{,}42}{12{,}56} = 0{,}75\text{ м}$$
+        </div>
+        <p>Радиус точки $B$:</p>
+        <div class="math-scroll">
+          $$R_B = \frac{v_B}{2\pi\nu} = \frac{6{,}28}{2 \cdot 3{,}14 \cdot 2{,}0} = \frac{6{,}28}{12{,}56} = 0{,}5\text{ м}$$
+        </div>
+        <p>Как видно из рисунка, обе точки лежат на одном радиусе диска, поэтому расстояние между ними равно разности их радиусов:</p>
+        <div class="math-scroll">
+          $$AB = R_A - R_B = 0{,}75 - 0{,}5 = 0{,}25\text{ м}$$
+        </div>
+        <strong>Ответ:</strong> вариант 3 (0,25 м).
+      </div>
+    </div>
+
+    <!-- Задача 10 (А11) -->
+    <div class="card" id="task-10">
+      <div class="task-num">Задача 10</div>
+      <div class="task-title">Материальная точка равномерно вращается по окружности, радиус которой $R = 48\text{ см}$. Если направление линейной скорости точки изменяется на противоположное через минимальный промежуток времени $\Delta t_1 = 2{,}7\text{ с}$, то модуль перемещения $\Delta r$ точки за промежуток времени $\Delta t_2 = 1{,}8\text{ с}$ равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(10, '1', this)">1) 24 см</button>
+        <button class="btn-option" onclick="handleChoice(10, '2', this)">2) 32 см</button>
+        <button class="btn-option" onclick="handleChoice(10, '3', this)">3) 48 см</button>
+        <button class="btn-option" onclick="handleChoice(10, '4', this)">4) 72 см</button>
+        <button class="btn-option" onclick="handleChoice(10, '5', this)">5) 96 см</button>
+      </div>
+      <div class="status-msg" id="status-10"></div>
+      <button class="btn-solution" id="btn-sol-10" onclick="toggleSolution(10)">Показать Решение</button>
+      <div class="solution-box" id="sol-10">
+        <p>Линейная скорость материальной точки, движущейся по окружности, изменяет направление на противоположное за половину периода. Поэтому период $T = 2\Delta t_1 = 5{,}4\text{ с}$. Время $\Delta t_2$ соответствует $\frac{1}{3}T$. Отсюда модуль перемещения $\Delta r = R = 48\text{ см}$.</p>
+        <strong>Ответ:</strong> вариант 3 (48 см).
+      </div>
+    </div>
+
+    <!-- Задача 11 (А13) -> image3.png -->
+    <div class="card" id="task-11">
+      <div class="task-num">Задача 11</div>
+      <div class="task-title">Диск равномерно вращается вокруг оси, перпендикулярной плоскости диска и проходящей через его центр $O$ (рис. 23). Если модуль линейной скорости точки 1 $v_1 = 2{,}4\text{ }\frac{\text{м}}{\text{с}}$, то модуль линейной скорости $v_2$ точки 2 равен:</div>
+      <div class="task-image-box">
+        <img src="image3.png" alt="Рис. 23" onerror="this.src='https://via.placeholder.com/350x220?text=image3.png';" />
+        <div class="img-caption">Рис. 23</div>
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(11, '1', this)">1) $2{,}4\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(11, '2', this)">2) $3{,}4\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(11, '3', this)">3) $3{,}6\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(11, '4', this)">4) $4{,}8\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(11, '5', this)">5) $6{,}8\text{ }\frac{\text{м}}{\text{с}}$</button>
+      </div>
+      <div class="status-msg" id="status-11"></div>
+      <button class="btn-solution" id="btn-sol-11" onclick="toggleSolution(11)">Показать Решение</button>
+      <div class="solution-box" id="sol-11">
+        <p>Воспользуемся «клеточным масштабом». Радиус вращения второй точки в два раза больше радиуса вращения первой точки: $\frac{r_2}{r_1} = 2$.</p>
+        <p>Так как угловые скорости точек одинаковы, то:</p>
+        <div class="math-scroll">
+          $$v_2 = 2v_1 = 4{,}8\text{ }\frac{\text{м}}{\text{с}}.$$
+        </div>
+        <strong>Ответ:</strong> вариант 4 ($4{,}8\text{ м/с}$).
+      </div>
+    </div>
+
+    <!-- Задача 12 (А17) -->
+    <div class="card" id="task-12">
+      <div class="task-num">Задача 12</div>
+      <div class="task-title">Угол поворота $\varphi$ диска радиусом $R = 80\text{ см}$, определяется по закону $\varphi = At$, где $A = 2{,}0\text{ }\frac{\text{рад}}{\text{с}}$. Модуль центростремительного ускорения $a$ точек на краю диска равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(12, '1', this)">1) $0{,}80\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(12, '2', this)">2) $1{,}2\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(12, '3', this)">3) $1{,}6\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(12, '4', this)">4) $2{,}5\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(12, '5', this)">5) $3{,}2\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+      </div>
+      <div class="status-msg" id="status-12"></div>
+      <button class="btn-solution" id="btn-sol-12" onclick="toggleSolution(12)">Показать Решение</button>
+      <div class="solution-box" id="sol-12">
+        <p>Из закона изменения угла поворота $\varphi = At$ следует, что угловая скорость $\omega$ постоянна и равна коэффициенту $A$:</p>
+        <div class="math-scroll">
+          $$\omega = A = 2{,}0\text{ }\frac{\text{рад}}{\text{с}}$$
+        </div>
+        <p>Модуль центростремительного ускорения $a$ вычисляется по формуле:</p>
+        <div class="math-scroll">
+          $$a = \omega^2 \cdot R$$
+        </div>
+        <p>Подставим числовые значения:</p>
+        <div class="math-scroll">
+          $$a = (2{,}0)^2 \cdot 0{,}8 = 4{,}0 \cdot 0{,}8 = 3{,}2\text{ }\frac{\text{м}}{\text{с}^2}$$
+        </div>
+        <strong>Ответ:</strong> вариант 5 ($3{,}2\text{ м/с}^2$).
+      </div>
+    </div>
+
+    <!-- Задача 13 (А14) -->
+    <div class="card" id="task-13">
+      <div class="task-num">Задача 13</div>
+      <div class="task-title">Два шкива соединены ременной передачей. Частота вращения ведущего шкива $\nu_1 = 600\text{ мин}^{-1}$, ведомого — $\nu_2 = 50\text{ с}^{-1}$. Если диаметр ведомого шкива $d_2 = 10\text{ см}$, то диаметр $d_1$ ведущего шкива равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(13, '1', this)">1) 12 см</button>
+        <button class="btn-option" onclick="handleChoice(13, '2', this)">2) 20 см</button>
+        <button class="btn-option" onclick="handleChoice(13, '3', this)">3) 25 см</button>
+        <button class="btn-option" onclick="handleChoice(13, '4', this)">4) 50 см</button>
+        <button class="btn-option" onclick="handleChoice(13, '5', this)">5) 60 см</button>
+      </div>
+      <div class="status-msg" id="status-13"></div>
+      <button class="btn-solution" id="btn-sol-13" onclick="toggleSolution(13)">Показать Решение</button>
+      <div class="solution-box" id="sol-13">
+        <p><strong>Переведем частоты вращения в одинаковые единицы измерения (в секунды в минус первой степени):</strong></p>
+        <ul>
+          <li>Частота ведущего шкива: $\nu_1 = 600\text{ мин}^{-1} = \frac{600}{60}\text{ с}^{-1} = 10\text{ с}^{-1}$</li>
+          <li>Частота ведомого шкива: $\nu_2 = 50\text{ с}^{-1}$</li>
+        </ul>
+        <p>За один полный оборот точка на ободе шкива проходит путь, равный длине окружности: $S = 2\pi R$ (где $R$ — радиус). Время одного оборота — это период $T$.</p>
+        <div class="math-scroll">
+          $$v = \frac{2\pi R}{T}$$
+        </div>
+        <p>Частота вращения — это величина, обратная периоду $\left(\nu = \frac{1}{T}\right)$. Подставим её в формулу скорости:</p>
+        <div class="math-scroll">
+          $$v = 2\pi R\nu$$
+        </div>
+        <p>Линейные скорости точек на ободе обоих шкивов равны ($v_1 = v_2$). Так как линейная скорость связана с диаметром и частотой формулой $v = \pi \cdot d \cdot \nu$, получаем соотношение:</p>
+        <div class="math-scroll">
+          $$d_1 \cdot \nu_1 = d_2 \cdot \nu_2$$
+        </div>
+        <p><strong>Выразим и найдем неизвестный диаметр $d_1$:</strong></p>
+        <div class="math-scroll">
+          $$d_1 = \frac{d_2 \cdot \nu_2}{\nu_1} = \frac{10\text{ см} \cdot 50\text{ с}^{-1}}{10\text{ с}^{-1}} = 50\text{ см}$$
+        </div>
+        <strong>Ответ:</strong> вариант 4 (50 см).
+      </div>
+    </div>
+
+    <!-- Задача 14 (А16) -->
+    <div class="card" id="task-14">
+      <div class="task-num">Задача 14</div>
+      <div class="task-title">Вертолет без начальной скорости начинает снижаться вертикально вниз с ускорением, модуль которого $a = 0{,}20\text{ }\frac{\text{м}}{\text{с}^2}$. Если лопасти винта, вращаясь со средней частотой $\langle \nu \rangle = 5{,}0\text{ }\frac{\text{об}}{\text{с}}$, совершили за время спуска $N = 100$ оборотов вокруг оси вращения, то модуль перемещения $\Delta r$ вертолета равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(14, '1', this)">1) 15 м</button>
+        <button class="btn-option" onclick="handleChoice(14, '2', this)">2) 20 м</button>
+        <button class="btn-option" onclick="handleChoice(14, '3', this)">3) 25 м</button>
+        <button class="btn-option" onclick="handleChoice(14, '4', this)">4) 30 м</button>
+        <button class="btn-option" onclick="handleChoice(14, '5', this)">5) 40 м</button>
+      </div>
+      <div class="status-msg" id="status-14"></div>
+      <button class="btn-solution" id="btn-sol-14" onclick="toggleSolution(14)">Показать Решение</button>
+      <div class="solution-box" id="sol-14">
+        <p>Из определения средней частоты вращения, она равна отношению общего числа оборотов к затраченному времени:</p>
+        <div class="math-scroll">
+          $$\langle \nu \rangle = \frac{N}{t}$$
+        </div>
+        <p>Отсюда выразим время спуска $t$:</p>
+        <div class="math-scroll">
+          $$t = \frac{N}{\langle \nu \rangle} = \frac{100}{5{,}0\text{ об/с}} = 20\text{ с}$$
+        </div>
+        <p>Вертолет движется вертикально вниз равноускоренно. Формула пути (или модуля перемещения) при движении без начальной скорости ($v_0 = 0$) имеет вид:</p>
+        <div class="math-scroll">
+          $$\Delta r = \frac{a \cdot t^2}{2}$$
+        </div>
+        <p>Подставим известное ускорение $a = 0{,}20\text{ м/с}^2$ и найденное время $t = 20\text{ с}$:</p>
+        <div class="math-scroll">
+          $$\Delta r = \frac{0{,}20 \cdot 20^2}{2} = \frac{0{,}20 \cdot 400}{2} = \frac{80}{2} = 40\text{ м}$$
+        </div>
+        <strong>Ответ:</strong> вариант 5 (40 м).
+      </div>
+    </div>
+
+    <!-- Задача 15 (А18) -->
+    <div class="card" id="task-15">
+      <div class="task-num">Задача 15</div>
+      <div class="task-title">Если минутная стрелка часов в $n = 1{,}2$ раза длиннее секундной, то отношение модуля линейной скорости $v_{\text{с}}$ движения конца секундной стрелки к модулю линейной скорости $v_{\text{м}}$ движения конца минутной стрелки равно:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(15, '1', this)">1) 12</button>
+        <button class="btn-option" onclick="handleChoice(15, '2', this)">2) 15</button>
+        <button class="btn-option" onclick="handleChoice(15, '3', this)">3) 20</button>
+        <button class="btn-option" onclick="handleChoice(15, '4', this)">4) 40</button>
+        <button class="btn-option" onclick="handleChoice(15, '5', this)">5) 50</button>
+      </div>
+      <div class="status-msg" id="status-15"></div>
+      <button class="btn-solution" id="btn-sol-15" onclick="toggleSolution(15)">Показать Решение</button>
+      <div class="solution-box" id="sol-15">
+        <p>Пусть длина секундной стрелки равна $R_{\text{с}}$, тогда длина минутной стрелки $R_{\text{м}} = n R_{\text{с}}$. Период обращения минутной стрелки $T_{\text{м}} = 3600\text{ с}$, секундной — $T_{\text{с}} = 60\text{ с}$. Модуль линейной скорости конца минутной стрелки $v_{\text{м}} = \frac{2\pi}{T_{\text{м}}} R_{\text{м}}$, секундной — $v_{\text{с}} = \frac{2\pi}{T_{\text{с}}} R_{\text{с}}$. Отсюда отношение:</p>
+        <div class="math-scroll">
+          $$\frac{v_{\text{с}}}{v_{\text{м}}} = \frac{R_{\text{с}} \cdot T_{\text{м}}}{n R_{\text{с}} \cdot T_{\text{с}}} = \frac{3600}{1{,}2 \cdot 60} = \frac{3600}{72} = 50.$$
+        </div>
+        <strong>Ответ:</strong> вариант 5 (50).
+      </div>
+    </div>
+
+    <!-- Задача 16 (В2) -> image4.png -->
+    <div class="card" id="task-16">
+      <div class="task-num">Задача 16</div>
+      <div class="task-title">На горизонтально расположенный вал намотана тонкая цепь, к свободному концу которой подвешено ведро (рис. 26). При равномерном опускании ведра за промежуток времени $\Delta t = 7{,}5\text{ с}$ с вала отмоталась цепь длиной $l = 3{,}3\text{ м}$. Если циклическая частота вращения вала $\omega = 4{,}0\text{ }\frac{\text{рад}}{\text{с}}$, то его диаметр $d$ равен ... см.</div>
+      <div class="task-image-box">
+        <img src="image4.png" alt="Рис. 26" onerror="this.src='https://via.placeholder.com/350x200?text=image4.png';" />
+        <div class="img-caption">Рис. 26</div>
+      </div>
+      <div class="task-desc">Введите диаметр в сантиметрах ($\text{см}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-16-input" />
+        <button class="btn-main" onclick="validateCalculation(16)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-16"></div>
+      <button class="btn-solution" id="btn-sol-16" onclick="toggleSolution(16)">Показать Решение</button>
+      <div class="solution-box" id="sol-16">
+        <p>Модуль скорости движения ведра равен модулю линейной скорости движения точек на поверхности вала: $\frac{l}{\Delta t} = \omega \frac{d}{2}$. Отсюда:</p>
+        <div class="math-scroll">
+          $$d = \frac{2l}{\omega \Delta t} = \frac{2 \cdot 3{,}3}{4{,}0 \cdot 7{,}5} = \frac{6{,}6}{30} = 0{,}22\text{ м} = 22\text{ см}.$$
+        </div>
+        <strong>Ответ:</strong> 22.
+      </div>
+    </div>
+
+    <!-- Задача 17 (В5) -> image5.png -->
+    <div class="card" id="task-17">
+      <div class="task-num">Задача 17</div>
+      <div class="task-title">На рисунке 28 показаны траектории $AB$ и $CD$ движения двух задних колес автомобиля, совершающего поворот, представляющий собой четверть дуги окружности. При этом внутреннее колесо за время поворота совершило $n_1 = 6$ оборотов, а внешнее — $n_2 = 7$ оборотов. На повороте каждое колесо автомобиля не проскальзывало и двигалось по дуге окружности. Если расстояние между колесами $l = 2{,}0\text{ м}$, то радиус $R$ дуги поворота равен ... м.</div>
+      <div class="task-image-box">
+        <img src="image5.png" alt="Рис. 28" onerror="this.src='https://via.placeholder.com/350x200?text=image5.png';" />
+        <div class="img-caption">Рис. 28</div>
+      </div>
+      <div class="task-desc">Введите радиус в метрах ($\text{м}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-17-input" />
+        <button class="btn-main" onclick="validateCalculation(17)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-17"></div>
+      <button class="btn-solution" id="btn-sol-17" onclick="toggleSolution(17)">Показать Решение</button>
+      <div class="solution-box" id="sol-17">
+        <p><strong>Длина пути каждого колеса через радиус поворота:</strong><br/>
+        Колеса автомобиля проходят четверть окружности $\left(\frac{1}{4}\text{ от } 2\pi R_{\text{окр}}\right)$:</p>
+        <ul>
+          <li>Путь внутреннего колеса: $S_1 = \frac{1}{4} \cdot 2\pi R = \frac{\pi R}{2}$</li>
+          <li>Путь внешнего колеса: $S_2 = \frac{1}{4} \cdot 2\pi(R + l) = \frac{\pi(R + l)}{2}$</li>
+        </ul>
+        <p><strong>Длина пути через количество оборотов колеса:</strong><br/>
+        Пусть $r$ — радиус колес автомобиля. Тогда:</p>
+        <ul>
+          <li>$S_1 = n_1 \cdot 2\pi r$</li>
+          <li>$S_2 = n_2 \cdot 2\pi r$</li>
+        </ul>
+        <p><strong>Составление отношения путей:</strong><br/>
+        Разделим $S_2$ на $S_1$:</p>
+        <div class="math-scroll">
+          $$\frac{S_2}{S_1} = \frac{R + l}{R} = \frac{n_2}{n_1}$$
+        </div>
+        <p>Подставляем все числа сразу ($l = 2$, $n_1 = 6$, $n_2 = 7$):</p>
+        <div class="math-scroll">
+          $$\frac{R + 2}{R} = \frac{7}{6}$$
+          $$6(R + 2) = 7R \implies 6R + 12 = 7R \implies R = 12\text{ м}$$
+        </div>
+        <strong>Ответ:</strong> 12.
+      </div>
+    </div>
+
+    <!-- Задача 18 (В6) -->
+    <div class="card" id="task-18">
+      <div class="task-num">Задача 18</div>
+      <div class="task-title">Два велосипедиста движутся в противоположных направлениях по кольцевому треку с постоянными угловыми скоростями. Если один из велосипедистов проезжает один круг за время $T_1 = 1{,}5\text{ мин}$, а другой — за время $T_2 = 3{,}5\text{ мин}$, то велосипедисты встречаются через минимальные промежутки времени $\Delta t_{\text{min}}$, равные ... с.</div>
+      <div class="task-desc">Введите промежуток времени в секундах ($\text{с}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-18-input" />
+        <button class="btn-main" onclick="validateCalculation(18)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-18"></div>
+      <button class="btn-solution" id="btn-sol-18" onclick="toggleSolution(18)">Показать Решение</button>
+      <div class="solution-box" id="sol-18">
+        <p><strong>Переведем время в секунды (так как ответ требуется в секундах):</strong></p>
+        <ul>
+          <li>$T_1 = 1{,}5\text{ мин} = 1{,}5 \cdot 60 = 90\text{ с}$</li>
+          <li>$T_2 = 3{,}5\text{ мин} = 3{,}5 \cdot 60 = 210\text{ с}$</li>
+        </ul>
+        <p><strong>Вводим понятие полного круга:</strong><br/>
+        Пусть длина всего кольцевого трека (один полный круг) равна $S$.</p>
+        <p><strong>Находим линейные скорости каждого велосипедиста:</strong></p>
+        <ul>
+          <li>Скорость первого: $v_1 = \frac{S}{T_1} = \frac{S}{90}$</li>
+          <li>Скорость второго: $v_2 = \frac{S}{T_2} = \frac{S}{210}$</li>
+        </ul>
+        <p><strong>Останавливаем первого велосипедиста:</strong><br/>
+        Свяжем систему отсчета с первым велосипедистом. Теперь он неподвижно стоит на месте ($v'_1 = 0$). Второй ехал ему навстречу, поэтому в этой системе отсчета его <strong>относительная скорость</strong> увеличивается и становится равной сумме скоростей:</p>
+        <div class="math-scroll">
+          $$v_{\text{отн}} = v_2 + v_1 = \frac{S}{210} + \frac{S}{90}$$
+        </div>
+        <p><strong>Ищем время встречи:</strong><br/>
+        Так как первый стоит на месте, второму нужно в одиночку проехать относительно него ровно один круг $S$, чтобы произошла встреча:</p>
+        <div class="math-scroll">
+          $$\Delta t_{\text{min}} = \frac{S}{v_{\text{отн}}} = \frac{S}{\frac{S}{210} + \frac{S}{90}}$$
+        </div>
+        <p>Сокращаем $S$ в числителе и знаменателе:</p>
+        <div class="math-scroll">
+          $$\Delta t_{\text{min}} = \frac{1}{\frac{1}{210} + \frac{1}{90}}$$
+        </div>
+        <p>Приводим к общему знаменателю 630:</p>
+        <div class="math-scroll">
+          $$\Delta t_{\text{min}} = \frac{1}{\frac{3}{630} + \frac{7}{630}} = \frac{1}{\frac{10}{630}} = \frac{630}{10} = 63\text{ с}$$
+        </div>
+        <strong>Ответ:</strong> 63.
+      </div>
+    </div>
+
+    <!-- Задача 19 (№1) -->
+    <div class="card" id="task-19">
+      <div class="task-num">Задача 19</div>
+      <div class="task-title">Две точки с постоянными по модулю скоростями движутся по окружности. Первая точка, двигаясь по часовой стрелке, делает один оборот за время $T_1 = 3{,}0\text{ с}$, вторая точка, двигаясь против часовой стрелки, делает один оборот за $T_2 = 1{,}0\text{ с}$. Время между двумя последовательными встречами точек составляет ... с.</div>
+      <div class="task-desc">Введите время между встречами в секундах ($\text{с}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-19-input" />
+        <button class="btn-main" onclick="validateCalculation(19)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-19"></div>
+      <button class="btn-solution" id="btn-sol-19" onclick="toggleSolution(19)">Показать Решение</button>
+      <div class="solution-box" id="sol-19">
+        <p><strong>1. Определение угловых скоростей:</strong><br/>
+        При движении по окружности угловая скорость точки выражается через период обращения $T$:</p>
+        <ul>
+          <li>Угловая скорость первой точки: $\omega_1 = \frac{2\pi}{T_1}$</li>
+          <li>Угловая скорость второй точки: $\omega_2 = \frac{2\pi}{T_2}$</li>
+        </ul>
+        <p><strong>2. Нахождение относительной скорости:</strong><br/>
+        Так как точки движутся в противоположных направлениях (одна по часовой стрелке, другая против), их относительная угловая скорость равна сумме их собственных скоростей:</p>
+        <div class="math-scroll">
+          $$\omega_{\text{отн}} = \omega_1 + \omega_2 = 2\pi\left(\frac{1}{T_1} + \frac{1}{T_2}\right)$$
+        </div>
+        <p><strong>3. Расчет времени между встречами:</strong><br/>
+        Время $\tau$ между двумя последовательными встречами — это время, за которое точки совместно описывают полный круг ($2\pi$ радиан):</p>
+        <div class="math-scroll">
+          $$\tau = \frac{2\pi}{\omega_{\text{отн}}} = \frac{1}{\frac{1}{T_1} + \frac{1}{T_2}} = \frac{T_1 \cdot T_2}{T_1 + T_2}$$
+        </div>
+        <p>Подставим значения $T_1 = 3{,}0\text{ с}$ и $T_2 = 1{,}0\text{ с}$:</p>
+        <div class="math-scroll">
+          $$\tau = \frac{3{,}0 \cdot 1{,}0}{3{,}0 + 1{,}0} = \frac{3}{4} = 0{,}75\text{ с}$$
+        </div>
+        <strong>Ответ:</strong> 0,75.
+      </div>
+    </div>
+
+    <!-- Задача 20 (В7) -->
+    <div class="card" id="task-20">
+      <div class="task-num">Задача 20</div>
+      <div class="task-title">Две материальные точки одновременно начинают движение по окружности из одного пункта в одном направлении. Если частота вращения первой точки $\nu_1 = 0{,}125\text{ с}^{-1}$, а второй — $\nu_2 = 0{,}10\text{ с}^{-1}$, то после начала движения точки встретятся через минимальный промежуток времени $\Delta t_{\text{min}}$, равный ... с.</div>
+      <div class="task-desc">Введите промежуток времени в секундах ($\text{с}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-20-input" />
+        <button class="btn-main" onclick="validateCalculation(20)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-20"></div>
+      <button class="btn-solution" id="btn-sol-20" onclick="toggleSolution(20)">Показать Решение</button>
+      <div class="solution-box" id="sol-20">
+        <p>Точки стартуют одновременно из одного места и едут <strong>в одном направлении (попутно)</strong>. Первая точка движется быстрее, так как её частота больше ($\nu_1 = 0{,}125\text{ с}^{-1}$ против $\nu_2 = 0{,}10\text{ с}^{-1}$).</p>
+        <p><strong>Останавливаем вторую точку:</strong><br/>
+        Свяжем систему отсчета со второй точкой. Теперь она неподвижна.<br/>
+        Так как они двигались в одну сторону, первая точка относительно неё будет двигаться с <strong>относительной частотой</strong>, равной разности их частот:</p>
+        <div class="math-scroll">
+          $$\nu_{\text{отн}} = \nu_1 - \nu_2$$
+        </div>
+        <p>Подставляем числа:</p>
+        <div class="math-scroll">
+          $$\nu_{\text{отн}} = 0{,}125 - 0{,}10 = 0{,}025\text{ с}^{-1}$$
+        </div>
+        <p>Это значит, что за одну секунду первая точка совершает 0,025 круга относительно «замороженной» второй точки.<br/>
+        Чтобы произошла первая встреча после старта, быстрая точка должна оторваться и сделать относительно неподвижной второй точки ровно <strong>один полный круг</strong>:</p>
+        <div class="math-scroll">
+          $$\Delta t_{\text{min}} = \frac{1}{\nu_{\text{отн}}}$$
+        </div>
+        <p><strong>Расчет:</strong></p>
+        <div class="math-scroll">
+          $$\Delta t_{\text{min}} = \frac{1}{0{,}025} = \frac{1}{\frac{25}{1000}} = \frac{1000}{25} = 40\text{ с}$$
+        </div>
+        <strong>Ответ:</strong> 40.
+      </div>
+    </div>
+
+    <!-- Задача 21 (В10) -> image6.png и image7.png -->
+    <div class="card" id="task-21">
+      <div class="task-num">Задача 21</div>
+      <div class="task-title">Стержень вращается с постоянной угловой скоростью вокруг оси, перпендикулярной стержню и находящейся между точками $B$ и $C$ (рис. 29). Модули линейной скорости точек $B$ и $C$ соответственно $v_B = 1{,}6\text{ }\frac{\text{м}}{\text{с}}$ и $v_C = 2{,}4\text{ }\frac{\text{м}}{\text{с}}$. Если между точками $A$ и $B$ расстояние $l = 5{,}0\text{ см}$, а между точками $B$ и $C$ расстояние $L = 50{,}0\text{ см}$, то модуль линейной скорости $v_A$ точки $A$ равен ... дм/с.</div>
+      <div class="task-image-box">
+        <img src="image6.png" alt="Рис. 29" onerror="this.src='https://via.placeholder.com/350x200?text=image6.png';" />
+        <div class="img-caption">Рис. 29</div>
+      </div>
+      <div class="task-desc">Введите модуль линейной скорости в дециметрах в секунду ($\text{дм/с}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-21-input" />
+        <button class="btn-main" onclick="validateCalculation(21)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-21"></div>
+      <button class="btn-solution" id="btn-sol-21" onclick="toggleSolution(21)">Показать Решение</button>
+      <div class="solution-box" id="sol-21">
+        <p>Пусть ось вращения стержня проходит через точку $O$ (рис. 403). Тогда радиусы вращения точек $A, B$ и $C$ соответственно $r_A = l + L - l_C$, $r_B = L - l_C$ и $r_C = l_C$. Учитывая, что модуль линейной скорости вращения точки прямо пропорционален радиусу вращения точки, запишем два уравнения:</p>
+        <div class="math-scroll">
+          $$\frac{v_A}{v_B} = \frac{r_A}{r_B} \quad \text{и} \quad \frac{v_B}{v_C} = \frac{r_B}{r_C}$$
+        </div>
+        <p>Подставив данные задачи, найдем ответ:</p>
+        <div class="math-scroll">
+          $$v_A = 20\text{ }\frac{\text{дм}}{\text{с}}.$$
+        </div>
+        <div class="task-image-box">
+          <img src="image7.png" alt="Рис. 403" onerror="this.src='https://via.placeholder.com/350x200?text=image7.png';" />
+          <div class="img-caption">Рис. 403</div>
+        </div>
+        <strong>Ответ:</strong> 20.
+      </div>
+    </div>
+
+    <!-- Задача 22 (В14) -->
+    <div class="card" id="task-22">
+      <div class="task-num">Задача 22</div>
+      <div class="task-title">Велосипедист едет на велосипеде, диаметр колеса которого $d = 80\text{ см}$, и вращает педали с частотой $\nu_1 = 90\text{ }\frac{\text{об}}{\text{мин}}$. Если ведущая звездочка велосипеда имеет $N_1 = 50$ зубцов, а ведомая — $N_2 = 20$ зубцов, то модуль скорости $v$ движения велосипедиста равен ... дм/с.<br/><em>Примечание. В задаче считать $\pi = 3{,}1$.</em></div>
+      <div class="task-desc">Введите модуль скорости в дециметрах в секунду ($\text{дм/с}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-22-input" />
+        <button class="btn-main" onclick="validateCalculation(22)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-22"></div>
+      <button class="btn-solution" id="btn-sol-22" onclick="toggleSolution(22)">Показать Решение</button>
+      <div class="solution-box" id="sol-22">
+        <p>Цепь лежит на зубьях звездочек, поэтому линейная скорость точек на ободке передней звездочки ($v_1$) и задней звездочки ($v_2$) равна скорости самой цепи:</p>
+        <div class="math-scroll">
+          $$v_1 = v_2 = v_{\text{цепи}}$$
+        </div>
+        <p>Вспомним формулу линейной скорости через частоту ($v = 2\pi R\nu$):</p>
+        <div class="math-scroll">
+          $$2\pi R_1\nu_1 = 2\pi R_2\nu_2 \implies R_1\nu_1 = R_2\nu_2$$
+        </div>
+        <p>Расстояние между соседними зубьями (шаг зубьев $t$) на обеих звездочках одинаковое, иначе цепь бы просто не легла на них.<br/>
+        Длина окружности звездочки — это произведение количества зубьев на шаг:</p>
+        <div class="math-scroll">
+          $$2\pi R = N \cdot t \implies R = \frac{N \cdot t}{2\pi}$$
+        </div>
+        <p>Подставим это выражение для $R_1$ и $R_2$ в равенство скоростей:</p>
+        <div class="math-scroll">
+          $$\left(\frac{N_1 \cdot t}{2\pi}\right) \cdot \nu_1 = \left(\frac{N_2 \cdot t}{2\pi}\right) \cdot \nu_2$$
+          $$N_1 \cdot \nu_1 = N_2 \cdot \nu_2$$
+          $$\nu_2 = \frac{N_1 \cdot \nu_1}{N_2} = \frac{50 \cdot 1{,}5}{20} = \frac{75}{20} = 3{,}75\text{ об/с}$$
+        </div>
+        <p>Скорость велосипеда равна линейной скорости точки на краю колеса:</p>
+        <div class="math-scroll">
+          $$v = \pi \cdot d \cdot \nu_2$$
+          $$v = 3{,}1 \cdot 8\text{ дм} \cdot 3{,}75 = 3{,}1 \cdot 30 = 93\text{ дм/с}$$
+        </div>
+        <strong>Ответ:</strong> 93.
+      </div>
+    </div>
+
+    <!-- Задача 23 (№20) -->
+    <div class="card" id="task-23">
+      <div class="task-num">Задача 23</div>
+      <div class="task-title">На высоте $h = 80\text{ см}$ над горизонтальным диском находится маленький шарик. Если после начала свободного падения шарика до попадания его на диск последний повернулся на угол $\alpha = 36^\circ$, то частота равномерного вращения этого диска равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(23, '1', this)">1) 0,25 об/с</button>
+        <button class="btn-option" onclick="handleChoice(23, '2', this)">2) 1,5 об/с</button>
+        <button class="btn-option" onclick="handleChoice(23, '3', this)">3) 2,5 об/с</button>
+        <button class="btn-option" onclick="handleChoice(23, '4', this)">4) 8,8 об/с</button>
+        <button class="btn-option" onclick="handleChoice(23, '5', this)">5) 88 об/с</button>
+      </div>
+      <div class="status-msg" id="status-23"></div>
+      <button class="btn-solution" id="btn-sol-23" onclick="toggleSolution(23)">Показать Решение</button>
+      <div class="solution-box" id="sol-23">
+        <p><strong>1. Нахождение времени падения шарика:</strong><br/>
+        Шарик совершает свободное падение без начальной скорости с высоты $h = 80\text{ см} = 0{,}8\text{ м}$. Время падения $t$ определяется по формуле:</p>
+        <div class="math-scroll">
+          $$h = \frac{gt^2}{2} \implies t = \sqrt{\frac{2h}{g}}$$
+          $$t = \sqrt{\frac{2 \cdot 0{,}8}{10}} = \sqrt{\frac{1{,}6}{10}} = \sqrt{0{,}16} = 0{,}4\text{ с}$$
+        </div>
+        <p>Составим пропорцию, чтобы перевести угол из градусов в радианы:</p>
+        <div class="math-scroll">
+          $$\pi\text{ рад} \longrightarrow 180^\circ$$
+          $$\Delta\varphi\text{ рад} \longrightarrow 36^\circ$$
+          $$\Delta\varphi = \frac{36^\circ \cdot \pi}{180^\circ} = \frac{\pi}{5}\text{ рад}$$
+        </div>
+        <p><strong>Формула угловой скорости:</strong></p>
+        <div class="math-scroll">
+          $$\omega = \frac{\Delta\varphi}{\Delta t}$$
+        </div>
+        <p>Также из теории вращательного движения мы знаем, что угловая скорость связана с частотой формулой:</p>
+        <div class="math-scroll">
+          $$\omega = 2\pi\nu$$
+        </div>
+        <p>Приравниваем эти выражения:</p>
+        <div class="math-scroll">
+          $$2\pi\nu = \frac{\Delta\varphi}{\Delta t}$$
+          $$\nu = \frac{\Delta\varphi}{2\pi \cdot \Delta t} = \frac{\frac{\pi}{5}}{2\pi \cdot 0{,}4} = \frac{1}{5 \cdot 2 \cdot 0{,}4} = \frac{1}{4} = 0{,}25\text{ об/с}$$
+        </div>
+        <strong>Ответ:</strong> вариант 1 (0,25 об/с).
+      </div>
+    </div>
+
+    <!-- Задача 24 (В15) -> image8.png в решении -->
+    <div class="card" id="task-24">
+      <div class="task-num">Задача 24</div>
+      <div class="task-title">Гладкий горизонтальный диск вращается с постоянной угловой скоростью $\omega = 3{,}0\text{ }\frac{\text{рад}}{\text{с}}$ вокруг вертикальной оси, проходящей через центр диска перпендикулярно его плоскости. На расстоянии $r = 40\text{ см}$ от оси на диске лежит маленькая шайба, вращающаяся вместе с диском. Если оторвавшаяся от диска шайба соскальзывала с диска в течение времени $\Delta t = 0{,}25\text{ с}$, то радиус $R$ диска равен ... см.</div>
+      <div class="task-desc">Введите радиус диска в сантиметрах ($\text{см}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-24-input" />
+        <button class="btn-main" onclick="validateCalculation(24)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-24"></div>
+      <button class="btn-solution" id="btn-sol-24" onclick="toggleSolution(24)">Показать Решение</button>
+      <div class="solution-box" id="sol-24">
+        <p>Модуль скорости движения шайбы $v = \omega r = 3{,}0 \cdot 0{,}4 = 1{,}2\text{ м/с}$. Из треугольника $OAB$ (рис. 405) следует:</p>
+        <div class="math-scroll">
+          $$R^2 - r^2 = v^2(\Delta t)^2.$$
+          $$R = \sqrt{r^2 + v^2(\Delta t)^2} = \sqrt{40^2 + (120 \cdot 0{,}25)^2} = \sqrt{1600 + 900} = \sqrt{2500} = 50\text{ см}.$$
+        </div>
+        <div class="task-image-box">
+          <img src="image8.png" alt="Рис. 405" onerror="this.src='https://via.placeholder.com/300x200?text=image8.png';" />
+          <div class="img-caption">Рис. 405</div>
+        </div>
+        <strong>Ответ:</strong> 50.
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Рендеринг формул KaTeX
+    function initMath() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    const correctAnswers = {
+      1: ['2'],
+      2: ['1'],
+      3: ['4'],
+      4: ['4'],
+      5: ['4'],
+      6: ['1'],
+      7: ['4'],
+      8: ['2'],
+      9: ['3'],
+      10: ['3'],
+      11: ['4'],
+      12: ['5'],
+      13: ['4'],
+      14: ['5'],
+      15: ['5'],
+      23: ['1']
+    };
+
+    function handleChoice(taskId, value, buttonEl) {
+      const card = document.getElementById(`task-${taskId}`);
+      const buttons = card.querySelectorAll('.btn-option');
+      const status = document.getElementById(`status-${taskId}`);
+      const btnSol = document.getElementById(`btn-sol-${taskId}`);
+
+      buttons.forEach(b => b.classList.remove('correct', 'incorrect'));
+
+      const isCorrect = correctAnswers[taskId] && correctAnswers[taskId].includes(value);
+
+      if (isCorrect) {
+        buttonEl.classList.add('correct');
+        status.className = 'status-msg correct';
+        status.innerHTML = '✓ Верно! Отличная работа.';
+        btnSol.style.display = 'none';
+      } else {
+        buttonEl.classList.add('incorrect');
+        status.className = 'status-msg incorrect';
+        status.innerHTML = '✕ Неверно. Попробуйте еще раз или посмотрите решение.';
+        btnSol.style.display = 'inline-block';
+      }
+    }
+
+    function parseVal(str) {
+      if (!str) return NaN;
+      let s = str.trim().toLowerCase().replace(/\s+/g, '').replace(',', '.');
+      s = s.replace('·', '*').replace('x', '*').replace('х', '*');
+      s = s.replace(/10\^(\-?\d+)/g, '1e$1');
+      s = s.replace(/\*1e/g, 'e');
+      return parseFloat(s);
+    }
+
+    function validateCalculation(taskId) {
+      const inputEl = document.getElementById(`calc-${taskId}-input`);
+      const val = parseVal(inputEl.value);
+      const status = document.getElementById(`status-${taskId}`);
+      const btnSol = document.getElementById(`btn-sol-${taskId}`);
+      let isCorrect = false;
+
+      // Задача 16: 22 см
+      if (taskId === 16) isCorrect = Math.abs(val - 22) < 0.5 || Math.abs(val - 0.22) < 0.02;
+      // Задача 17: 12 м
+      else if (taskId === 17) isCorrect = Math.abs(val - 12) < 0.5;
+      // Задача 18: 63 с
+      else if (taskId === 18) isCorrect = Math.abs(val - 63) < 0.5;
+      // Задача 19: 0.75 с
+      else if (taskId === 19) isCorrect = Math.abs(val - 0.75) < 0.05 || Math.abs(val - 0.8) < 0.05;
+      // Задача 20: 40 с
+      else if (taskId === 20) isCorrect = Math.abs(val - 40) < 0.5;
+      // Задача 21: 20 дм/с (или 2 м/с)
+      else if (taskId === 21) isCorrect = Math.abs(val - 20) < 0.5 || Math.abs(val - 2) < 0.1;
+      // Задача 22: 93 дм/с (или 9.3 м/с)
+      else if (taskId === 22) isCorrect = Math.abs(val - 93) < 0.5 || Math.abs(val - 9.3) < 0.1;
+      // Задача 24: 50 см (или 0.5 м)
+      else if (taskId === 24) isCorrect = Math.abs(val - 50) < 0.5 || Math.abs(val - 0.5) < 0.05;
+
+      if (isCorrect) {
+        status.className = 'status-msg correct';
+        status.innerHTML = '✓ Правильно! Расчет выполнен верно.';
+        btnSol.style.display = 'none';
+      } else {
+        status.className = 'status-msg incorrect';
+        status.innerHTML = '✕ Не сходится. Перепроверьте расчет.';
+        btnSol.style.display = 'inline-block';
+      }
+    }
+
+    function toggleSolution(taskId) {
+      const box = document.getElementById(`sol-${taskId}`);
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+      } else {
+        box.style.display = 'block';
+        if (window.renderMathInElement) {
+          renderMathInElement(box, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "$", right: "$", display: false }
+            ],
+            throwOnError: false
+          });
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initMath, 200);
+    });
+  </script>
+</body>
+</html>
