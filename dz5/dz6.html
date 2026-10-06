@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ДЗ 14 • Законы Ньютона • Масса • Тяжесть и вес</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <!-- KaTeX для формул -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="initMath()"></script>
+
+  <style>
+    :root {
+      --bg-main: #090a10;
+      --surface-card: rgba(18, 22, 34, 0.72);
+      --surface-elevated: rgba(26, 32, 48, 0.85);
+      --surface-input: rgba(13, 16, 26, 0.7);
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
+
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.2);
+      --error: #f43f5e;
+      --error-glow: rgba(244, 63, 94, 0.2);
+
+      --border: rgba(255, 255, 255, 0.08);
+      --radius-xl: 24px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+
+      --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg-main);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 20%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(236, 72, 153, 0.07) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-top: 40px;
+      padding-bottom: 140px;
+      overflow-x: hidden;
+    }
+
+    /* Главный контейнер */
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      padding: 5px 16px;
+      border-radius: 30px;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-sub);
+    }
+
+    /* Карточки задач */
+    .card {
+      background: var(--surface-card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      padding: 32px;
+      margin-bottom: 28px;
+      transition: transform 0.35s var(--ease-spring), box-shadow 0.35s var(--ease-spring), border-color 0.35s var(--ease-spring);
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 28px 50px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .task-num {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      padding: 4px 12px;
+      border-radius: 30px;
+      margin-bottom: 16px;
+    }
+
+    .task-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.55;
+      margin-bottom: 14px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 4px;
+    }
+
+    .task-desc {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-sub);
+      margin-bottom: 14px;
+    }
+
+    /* Блоки с картинками */
+    .task-image-box {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin: 16px 0 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .task-image-box img {
+      max-width: 100%;
+      max-height: 250px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .img-caption {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    /* Поля ввода и кнопки */
+    .input-action-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .input-text {
+      flex: 1;
+      min-width: 200px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface-input);
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .input-text:focus {
+      border-color: var(--accent);
+      background: rgba(20, 26, 42, 0.9);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .btn-main {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 14px 26px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+      box-shadow: 0 4px 18px var(--accent-glow);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4);
+      filter: brightness(1.1);
+    }
+
+    .btn-main:active {
+      transform: scale(0.97);
+    }
+
+    /* Кнопки вариантов ответов */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .options-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn-option {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .options-vertical .btn-option {
+      justify-content: flex-start;
+      text-align: left;
+      padding: 14px 20px;
+    }
+
+    .btn-option:hover:not(:disabled) {
+      background: rgba(45, 55, 80, 0.95);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-option:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .btn-option.correct {
+      background: var(--success) !important;
+      border-color: var(--success) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 24px var(--success-glow) !important;
+    }
+
+    .btn-option.incorrect {
+      background: var(--error) !important;
+      border-color: var(--error) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 24px var(--error-glow) !important;
+    }
+
+    /* Уведомления и решение */
+    .status-msg {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 700;
+      animation: smoothSlideIn 0.35s var(--ease-spring) forwards;
+    }
+
+    .status-msg.correct {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .status-msg.incorrect {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(244, 63, 94, 0.1);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.25);
+    }
+
+    .btn-solution {
+      display: none;
+      margin-top: 14px;
+      background: rgba(244, 63, 94, 0.08);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      padding: 11px 22px;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .btn-solution:hover {
+      background: rgba(244, 63, 94, 0.16);
+      border-color: #f43f5e;
+      transform: translateY(-1px);
+    }
+
+    /* Блок решения с полной адаптивностью */
+    .solution-box {
+      display: none;
+      margin-top: 18px;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: var(--radius-lg);
+      border-left: 4px solid var(--accent);
+      border-right: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 22px 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.75;
+      color: #e2e8f0;
+      animation: smoothSlideIn 0.4s var(--ease-spring) forwards;
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .solution-box strong {
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .solution-box p, .solution-box div {
+      margin-bottom: 10px;
+    }
+
+    .solution-box ol, .solution-box ul {
+      margin-left: 22px;
+      margin-bottom: 12px;
+    }
+
+    .solution-box li {
+      margin-bottom: 6px;
+    }
+
+    .math-scroll {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 10px 0;
+      margin: 8px 0;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .math-scroll::-webkit-scrollbar,
+    .task-title::-webkit-scrollbar,
+    .solution-box::-webkit-scrollbar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .math-scroll::-webkit-scrollbar-thumb,
+    .task-title::-webkit-scrollbar-thumb,
+    .solution-box::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 10px;
+    }
+
+    .katex-display {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 8px 0;
+      margin: 6px 0 !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .katex-display::-webkit-scrollbar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .katex-display::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 10px;
+    }
+
+    @keyframes smoothSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <div class="hero">
+      <div class="hero-badge">ДЗ 14</div>
+      <h1>Законы Ньютона • Масса • Тяжесть и вес</h1>
+      <p>Выберите вариант ответа или введите полученное числовое значение.</p>
+    </div>
+
+    <!-- Задача 1 (№9) -->
+    <div class="card" id="task-1">
+      <div class="task-num">Задача 1</div>
+      <div class="task-title">Определите объем $V$ стеклянного $\left(\rho = 2500\text{ }\frac{\text{кг}}{\text{м}^3}\right)$ стакана, если его масса $m = 120\text{ г}$.</div>
+      <div class="task-desc">Введите объем в кубических сантиметрах ($\text{см}^3$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-1-input" />
+        <button class="btn-main" onclick="validateCalculation(1)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-1"></div>
+      <button class="btn-solution" id="btn-sol-1" onclick="toggleSolution(1)">Показать Решение</button>
+      <div class="solution-box" id="sol-1">
+        <ol>
+          <li>Переведем плотность стекла из $\text{кг/м}^3$ в $\text{г/см}^3$:
+            <div class="math-scroll">$$\rho = 2500\text{ кг/м}^3 = 2{,}5\text{ г/см}^3$$</div>
+          </li>
+          <li>Используем формулу для нахождения объема:
+            <div class="math-scroll">$$V = \frac{m}{\rho}$$</div>
+          </li>
+          <li>Подставим значения ($m = 120\text{ г}$):
+            <div class="math-scroll">$$V = \frac{120}{2{,}5} = 48\text{ см}^3$$</div>
+          </li>
+        </ol>
+        <strong>Ответ:</strong> $48\text{ см}^3$.
+      </div>
+    </div>
+
+    <!-- Задача 2 (№10) -->
+    <div class="card" id="task-2">
+      <div class="task-num">Задача 2</div>
+      <div class="task-title">Прямоугольный параллелепипед имеет размеры: $a = 40\text{ см}$, $b = 20\text{ см}$, $c = 10\text{ см}$. Определите плотность вещества параллелепипеда, если его масса $m = 6{,}0\text{ кг}$.</div>
+      <div class="task-desc">Введите плотность в граммах на кубический сантиметр ($\text{г/см}^3$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-2-input" />
+        <button class="btn-main" onclick="validateCalculation(2)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-2"></div>
+      <button class="btn-solution" id="btn-sol-2" onclick="toggleSolution(2)">Показать Решение</button>
+      <div class="solution-box" id="sol-2">
+        <ol>
+          <li>Найдем объем прямоугольного параллелепипеда:
+            <div class="math-scroll">$$V = a \cdot b \cdot c = 40\text{ см} \cdot 20\text{ см} \cdot 10\text{ см} = 8000\text{ см}^3$$</div>
+          </li>
+          <li>Переведем массу из килограммов в граммы:
+            <div class="math-scroll">$$m = 6{,}0\text{ кг} = 6000\text{ г}$$</div>
+          </li>
+          <li>Используем формулу плотности $\left(\rho = \frac{m}{V}\right)$:
+            <div class="math-scroll">$$\rho = \frac{6000}{8000} = 0{,}75\text{ г/см}^3$$</div>
+          </li>
+        </ol>
+        <strong>Ответ:</strong> $0{,}75\text{ г/см}^3$.
+      </div>
+    </div>
+
+    <!-- Задача 3 (№75) -> image1.png и image12.png -->
+    <div class="card" id="task-3">
+      <div class="task-num">Задача 3</div>
+      <div class="task-title">Чему равен модуль равнодействующей силы, если силы $F_1 = F_2 = 3\text{ Н}$ направлены под углом $\alpha = 120^\circ$ друг к другу (см. рис. 48)?</div>
+      <div class="task-image-box">
+        <img src="image1.png" alt="Рис. 48" onerror="this.src='https://via.placeholder.com/300x200?text=image1.png';" />
+        <div class="img-caption">Рис. 48</div>
+      </div>
+      <div class="task-desc">Введите модуль равнодействующей силы в Ньютонах ($\text{Н}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-3-input" />
+        <button class="btn-main" onclick="validateCalculation(3)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-3"></div>
+      <button class="btn-solution" id="btn-sol-3" onclick="toggleSolution(3)">Показать Решение</button>
+      <div class="solution-box" id="sol-3">
+        <div class="task-image-box">
+          <img src="image12.png" alt="Сложение векторов" onerror="this.src='https://via.placeholder.com/350x220?text=image12.png';" />
+        </div>
+        <p>По правилу параллелограмма формула для модуля равнодействующей силы $F$ выглядит следующим образом:</p>
+        <div class="math-scroll">
+          $$F = \sqrt{F_1^2 + F_2^2 + 2 \cdot F_1 \cdot F_2 \cdot \cos\alpha}$$
+        </div>
+        <ol>
+          <li>Учитывая, что $\cos 120^\circ = -0{,}5$, подставим значения:
+            <div class="math-scroll">$$F = \sqrt{3^2 + 3^2 + 2 \cdot 3 \cdot 3 \cdot (-0{,}5)}$$</div>
+          </li>
+          <li>Рассчитаем итоговое значение:
+            <div class="math-scroll">$$F = \sqrt{9 + 9 - 9} = \sqrt{9} = 3\text{ Н}$$</div>
+          </li>
+        </ol>
+        <strong>Ответ:</strong> $3\text{ Н}$.
+      </div>
+    </div>
+
+    <!-- Задача 4 (№79) -->
+    <div class="card" id="task-4">
+      <div class="task-num">Задача 4</div>
+      <div class="task-title">Сила $10\text{ Н}$ сообщает телу ускорение $0{,}4\text{ м/с}^2$. Какая сила сообщает этому же телу ускорение $2\text{ м/с}^2$?</div>
+      <div class="task-desc">Введите силу в Ньютонах ($\text{Н}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-4-input" />
+        <button class="btn-main" onclick="validateCalculation(4)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-4"></div>
+      <button class="btn-solution" id="btn-sol-4" onclick="toggleSolution(4)">Показать Решение</button>
+      <div class="solution-box" id="sol-4">
+        <p>По второму закону Ньютона сила равна произведению массы на ускорение ($F = m \cdot a$). Поскольку тело одно и то же, его масса $m$ неизменна:</p>
+        <ol>
+          <li>Найдем массу тела:
+            <div class="math-scroll">$$m = \frac{F_1}{a_1} = \frac{10\text{ Н}}{0{,}4\text{ м/с}^2} = 25\text{ кг}$$</div>
+          </li>
+          <li>Найдем силу, необходимую для нового ускорения:
+            <div class="math-scroll">$$F_2 = m \cdot a_2 = 25\text{ кг} \cdot 2\text{ м/с}^2 = 50\text{ Н}$$</div>
+          </li>
+        </ol>
+        <strong>Ответ:</strong> $50\text{ Н}$.
+      </div>
+    </div>
+
+    <!-- Задача 5 (№80) -> image2.png и image13.png -->
+    <div class="card" id="task-5">
+      <div class="task-num">Задача 5</div>
+      <div class="task-title">На тело массой $5\text{ кг}$ действуют силы, как это показано на рисунке 52, $F_1 = 15\text{ Н}$, $F_2 = 20\text{ Н}$. С каким ускорением будет двигаться тело?</div>
+      <div class="task-image-box">
+        <img src="image2.png" alt="Рис. 52" onerror="this.src='https://via.placeholder.com/300x180?text=image2.png';" />
+        <div class="img-caption">Рис. 52</div>
+      </div>
+      <div class="task-desc">Введите ускорение в метрах на секунду в квадрате ($\text{м/с}^2$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-5-input" />
+        <button class="btn-main" onclick="validateCalculation(5)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-5"></div>
+      <button class="btn-solution" id="btn-sol-5" onclick="toggleSolution(5)">Показать Решение</button>
+      <div class="solution-box" id="sol-5">
+        <div class="task-image-box">
+          <img src="image13.png" alt="Сложение сил" onerror="this.src='https://via.placeholder.com/350x220?text=image13.png';" />
+        </div>
+        <ol>
+          <li>На рисунке 52 векторы сил $\vec{F}_1$ и $\vec{F}_2$ перпендикулярны друг другу. По теореме Пифагора найдем модуль равнодействующей силы $F$:
+            <div class="math-scroll">$$F = \sqrt{F_1^2 + F_2^2} = \sqrt{15^2 + 20^2} = \sqrt{225 + 400} = \sqrt{625} = 25\text{ Н}$$</div>
+          </li>
+          <li>По второму закону Ньютона найдем ускорение тела:
+            <div class="math-scroll">$$a = \frac{F}{m} = \frac{25\text{ Н}}{5\text{ кг}} = 5\text{ м/с}^2$$</div>
+          </li>
+        </ol>
+        <strong>Ответ:</strong> $5\text{ м/с}^2$.
+      </div>
+    </div>
+
+    <!-- Задача 6 (№166) -->
+    <div class="card" id="task-6">
+      <div class="task-num">Задача 6</div>
+      <div class="task-title">Проекция скорости автомобиля массой $m = 20\text{ т}$, движущегося по оси $Ox$, изменяется по закону $v_x = A + Bt$, где $A = 20\text{ }\frac{\text{м}}{\text{с}}$, $B = -0{,}10\text{ }\frac{\text{м}}{\text{с}^2}$. Найдите модуль результирующей силы $F$, действующей на автомобиль.</div>
+      <div class="task-desc">Введите модуль силы в килоньютонах ($\text{кН}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-6-input" />
+        <button class="btn-main" onclick="validateCalculation(6)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-6"></div>
+      <button class="btn-solution" id="btn-sol-6" onclick="toggleSolution(6)">Показать Решение</button>
+      <div class="solution-box" id="sol-6">
+        <p>В физике уравнение проекции скорости при равноускоренном движении имеет стандартный вид:</p>
+        <div class="math-scroll">$$v_x = v_{0x} + a_x t$$</div>
+        <p>В условии задачи закон изменения скорости задан математическим выражением:</p>
+        <div class="math-scroll">$$v_x = A + Bt$$</div>
+        <p>Если записать эти уравнения друг под другом, становится очевидно, какой коэффициент за какую величину отвечает:</p>
+        <ul>
+          <li>$A = v_{0x}$ — это начальная скорость автомобиля. По условию она равна $20\text{ м/с}$.</li>
+          <li>$B = a_x$ — это проекция ускорения автомобиля. По условию она равна $-0{,}10\text{ м/с}^2$.</li>
+        </ul>
+        <p>Отсюда находим проекцию и модуль ускорения:</p>
+        <div class="math-scroll">
+          $$a_x = B = -0{,}10\text{ м/с}^2$$
+          $$a = |a_x| = 0{,}10\text{ м/с}^2$$
+        </div>
+        <p>Переведем массу в систему СИ: $m = 20\text{ т} = 20\,000\text{ кг}$.</p>
+        <p>Найдем модуль результирующей силы по второму закону Ньютона:</p>
+        <div class="math-scroll">
+          $$F = m \cdot a = 20\,000\text{ кг} \cdot 0{,}10\text{ м/с}^2 = 2000\text{ Н} = 2\text{ кН}$$
+        </div>
+        <strong>Ответ:</strong> $2\text{ кН}$ (или $2000\text{ Н}$).
+      </div>
+    </div>
+
+    <!-- Задача 7 (№81) -->
+    <div class="card" id="task-7">
+      <div class="task-num">Задача 7</div>
+      <div class="task-title">Масса легкового автомобиля $2\text{ т}$, а грузового — $8\text{ т}$. Сравните ускорения автомобилей, если сила тяги грузового автомобиля в 2 раза больше, чем сила тяги легкового автомобиля. (Найдите отношение $a_{\text{л}} / a_{\text{гр}}$).</div>
+      <div class="task-desc">Введите отношение ускорений ($a_{\text{л}} / a_{\text{гр}}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-7-input" />
+        <button class="btn-main" onclick="validateCalculation(7)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-7"></div>
+      <button class="btn-solution" id="btn-sol-7" onclick="toggleSolution(7)">Показать Решение</button>
+      <div class="solution-box" id="sol-7">
+        <p>Запишем формулу ускорения из второго закона Ньютона:</p>
+        <div class="math-scroll">$$a = \frac{F}{m}$$</div>
+        <p>Выразим ускорения для обоих автомобилей:</p>
+        <ul>
+          <li>Для легкового: $a_{\text{л}} = \frac{F_{\text{тяги.л}}}{m_{\text{л}}}$</li>
+          <li>Для грузового: $a_{\text{гр}} = \frac{F_{\text{тяги.гр}}}{m_{\text{гр}}}$</li>
+        </ul>
+        <p>Подставим условия задачи:</p>
+        <ul>
+          <li>Массы: $m_{\text{л}} = 2\text{ т}$, $m_{\text{гр}} = 8\text{ т}$</li>
+          <li>Силы тяги: $F_{\text{тяги.гр}} = 2F_{\text{тяги.л}}$</li>
+        </ul>
+        <p>Найдем отношение ускорений $\frac{a_{\text{л}}}{a_{\text{гр}}}$:</p>
+        <div class="math-scroll">
+          $$\frac{a_{\text{л}}}{a_{\text{гр}}} = \frac{\frac{F_{\text{тяги.л}}}{m_{\text{л}}}}{\frac{F_{\text{тяги.гр}}}{m_{\text{гр}}}} = \frac{F_{\text{тяги.л}}}{F_{\text{тяги.гр}}} \cdot \frac{m_{\text{гр}}}{m_{\text{л}}}$$
+          $$\frac{a_{\text{л}}}{a_{\text{гр}}} = \frac{F_{\text{тяги.л}}}{2F_{\text{тяги.л}}} \cdot \frac{8\text{ т}}{2\text{ т}} = \frac{1}{2} \cdot 4 = 2$$
+        </div>
+        <strong>Ответ:</strong> $a_{\text{л}} = 2a_{\text{гр}}$.
+      </div>
+    </div>
+
+    <!-- Задача 8 (№172) -> image3.png и image14.png -->
+    <div class="card" id="task-8">
+      <div class="task-num">Задача 8</div>
+      <div class="task-title">Под действием сил $\vec{F}_1$ и $\vec{F}_2$ (рис. 24) тело движется с ускорением, модуль которого $a = 2{,}4\text{ }\frac{\text{м}}{\text{с}^2}$. Найдите массу $m$ тела, если проекции силы $\vec{F}_2$ на оси координат $F_{2x} = 3{,}0\text{ Н}$ и $F_{2y} = 1{,}5\text{ Н}$.</div>
+      <div class="task-image-box">
+        <img src="image3.png" alt="Рис. 24" onerror="this.src='https://via.placeholder.com/300x200?text=image3.png';" />
+        <div class="img-caption">Рис. 24</div>
+      </div>
+      <div class="task-desc">Введите массу тела в килограммах ($\text{кг}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-8-input" />
+        <button class="btn-main" onclick="validateCalculation(8)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-8"></div>
+      <button class="btn-solution" id="btn-sol-8" onclick="toggleSolution(8)">Показать Решение</button>
+      <div class="solution-box" id="sol-8">
+        <div class="task-image-box">
+          <img src="image14.png" alt="Сложение векторов" onerror="this.src='https://via.placeholder.com/350x250?text=image14.png';" />
+        </div>
+        <p><strong>Способ 1. Графический (метод параллелограмма):</strong></p>
+        <ol>
+          <li>Шаг 1: Находим масштаб сетки. По условию для силы $\vec{F}_2$ известны её численные проекции:
+            <ul>
+              <li>По оси $OX$ вектор занимает 2 клетки, и это равно $3{,}0\text{ Н}$.</li>
+              <li>По оси $OY$ вектор занимает 1 клетку, и это равно $1{,}5\text{ Н}$.</li>
+            </ul>
+            Отсюда получаем цену одной клетки: <strong>$1\text{ клетка} = 1{,}5\text{ Н}$</strong>.
+          </li>
+          <li>Посчитав клетки получившегося итогового вектора, мы увидим его проекции на оси: по горизонтали $OX$ он не отклоняется (занимает 0 клеток), а по вертикали $OY$ поднимается ровно на 5 клеток вверх.</li>
+          <li>Умножив 5 клеток на масштаб одной клетки ($1{,}5\text{ Н}$), мы сразу получаем модуль силы:
+            <div class="math-scroll">$$F = 5 \cdot 1{,}5\text{ Н} = 7{,}5\text{ Н}$$</div>
+          </li>
+          <li>По второму закону Ньютона:
+            <div class="math-scroll">$$m = \frac{F}{a} = \frac{7{,}5\text{ Н}}{2{,}4\text{ м/с}^2} = 3{,}125\text{ кг}$$</div>
+          </li>
+        </ol>
+        <p><strong>Способ 2 через проекции:</strong></p>
+        <div class="math-scroll">
+          $$F_x = F_{1x} + F_{2x} = -3{,}0\text{ Н} + 3{,}0\text{ Н} = 0\text{ Н}$$
+          $$F_y = F_{1y} + F_{2y} = 6{,}0\text{ Н} + 1{,}5\text{ Н} = 7{,}5\text{ Н}$$
+          $$F = \sqrt{F_x^2 + F_y^2} = \sqrt{0^2 + 7{,}5^2} = 7{,}5\text{ Н}$$
+          $$m = \frac{F}{a} = \frac{7{,}5\text{ Н}}{2{,}4\text{ м/с}^2} = 3{,}125\text{ кг}$$
+        </div>
+        <strong>Ответ:</strong> $3{,}125\text{ кг}$.
+      </div>
+    </div>
+
+    <!-- Задача 9 (№4) -->
+    <div class="card" id="task-9">
+      <div class="task-num">Задача 9</div>
+      <div class="task-title">Два магнита (массами $m_1 = 24\text{ г}$ и $m_2 = 12\text{ г}$) притягиваются друг к другу. Определите модуль силы $F_2$, с которой второй магнит притягивает первый, если модуль силы, с которой первый магнит притягивает второй, равен $F_1 = 2{,}4\text{ Н}$.</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(9, 'а', this)">а) 0,60 Н</button>
+        <button class="btn-option" onclick="handleChoice(9, 'б', this)">б) 1,2 Н</button>
+        <button class="btn-option" onclick="handleChoice(9, 'в', this)">в) 2,4 Н</button>
+        <button class="btn-option" onclick="handleChoice(9, 'г', this)">г) 4,8 Н</button>
+        <button class="btn-option" onclick="handleChoice(9, 'д', this)">д) 9,6 Н</button>
+      </div>
+      <div class="status-msg" id="status-9"></div>
+      <button class="btn-solution" id="btn-sol-9" onclick="toggleSolution(9)">Показать Решение</button>
+      <div class="solution-box" id="sol-9">
+        <p>Эта задача полностью опирается на <strong>третий закон Ньютона</strong>, который гласит: тела взаимодействуют друг с другом с силами, равными по модулю и противоположными по направлению ($\vec{F}_1 = -\vec{F}_2$).</p>
+        <ol>
+          <li>Первый магнит притягивает второй с силой $F_1$.</li>
+          <li>Второй магнит притягивает первый с силой $F_2$.</li>
+          <li>Согласно третьему закону Ньютона, модули этих сил обязательно равны:
+            <div class="math-scroll">$$F_2 = F_1 = 2{,}4\text{ Н}$$</div>
+          </li>
+        </ol>
+        <p><em>Примечание:</em> Различие в массах магнитов (24 г и 12 г) никак не влияет на равенство сил.</p>
+        <strong>Ответ:</strong> в ($2{,}4\text{ Н}$).
+      </div>
+    </div>
+
+    <!-- Задача 10 (№7 Ваня) -->
+    <div class="card" id="task-10">
+      <div class="task-num">Задача 10</div>
+      <div class="task-title">Ваня ($m_1 = 40\text{ кг}$), стоя на гладком льду, отталкивает от себя камень (снаряд в кёрлинге массой $m_2 = 20\text{ кг}$), придавая ему ускорение, модуль которого $a_2 = 4{,}0\text{ }\frac{\text{м}}{\text{с}^2}$. Определите модуль ускорения $a_1$, которое получает при этом Ваня.</div>
+      <div class="task-desc">Введите модуль ускорения в метрах на секунду в квадрате ($\text{м/с}^2$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-10-input" />
+        <button class="btn-main" onclick="validateCalculation(10)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-10"></div>
+      <button class="btn-solution" id="btn-sol-10" onclick="toggleSolution(10)">Показать Решение</button>
+      <div class="solution-box" id="sol-10">
+        <ol>
+          <li>Согласно третьему закону Ньютона, с какой силой Ваня отталкивает камень ($F_2$), с точно такой же по модулю силой и камень отталкивает Ваню ($F_1$):
+            <div class="math-scroll">$$F_1 = F_2$$</div>
+          </li>
+          <li>Распишем каждую силу через второй закон Ньютона ($F = m \cdot a$):
+            <ul>
+              <li>Сила, действующая на Ваню: $F_1 = m_1 \cdot a_1$</li>
+              <li>Сила, действующая на камень: $F_2 = m_2 \cdot a_2$</li>
+            </ul>
+          </li>
+          <li>Приравняем эти выражения:
+            <div class="math-scroll">$$m_1 \cdot a_1 = m_2 \cdot a_2$$</div>
+          </li>
+          <li>Выразим и рассчитаем модуль ускорения Вани ($a_1$):
+            <div class="math-scroll">$$a_1 = \frac{m_2 \cdot a_2}{m_1} = \frac{20\text{ кг} \cdot 4{,}0\text{ м/с}^2}{40\text{ кг}} = \frac{80}{40} = 2{,}0\text{ м/с}^2$$</div>
+          </li>
+        </ol>
+        <strong>Ответ:</strong> $2{,}0\text{ м/с}^2$.
+      </div>
+    </div>
+
+    <!-- Задача 11 (№9 пуля) -->
+    <div class="card" id="task-11">
+      <div class="task-num">Задача 11</div>
+      <div class="task-title">Пуля массой $m = 10\text{ г}$ попадает в закреплённую доску и останавливается, пройдя расстояние $s = 6{,}5\text{ см}$. Определите модуль силы $F$, с которой пуля действовала на доску, если модуль скорости пули в момент попадания в доску $v_0 = 130\text{ }\frac{\text{м}}{\text{с}}$.<br/><em>Примечание. Движение пули внутри доски считайте равнозамедленным.</em></div>
+      <div class="task-desc">Введите модуль силы в килоньютонах ($\text{кН}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-11-input" />
+        <button class="btn-main" onclick="validateCalculation(11)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-11"></div>
+      <button class="btn-solution" id="btn-sol-11" onclick="toggleSolution(11)">Показать Решение</button>
+      <div class="solution-box" id="sol-11">
+        <p>Переведем величины в СИ: $m = 10\text{ г} = 0{,}01\text{ кг}$, $s = 6{,}5\text{ см} = 0{,}065\text{ м}$, $v_0 = 130\text{ м/с}$, $v = 0$.</p>
+        <p>Из формулы кинематики без времени:</p>
+        <div class="math-scroll">
+          $$a = \frac{v_0^2}{2s} = \frac{130^2}{2 \cdot 0{,}065} = \frac{16900}{0{,}13} = 130\,000\text{ м/с}^2$$
+        </div>
+        <p>По второму закону Ньютона:</p>
+        <div class="math-scroll">
+          $$F = m \cdot a = 0{,}01\text{ кг} \cdot 130\,000\text{ м/с}^2 = 1300\text{ Н} = 1{,}3\text{ кН}$$
+        </div>
+        <p>По третьему закону Ньютона сила действия пули на доску равна силе сопротивления доски: $F = 1{,}3\text{ кН}$.</p>
+        <strong>Ответ:</strong> $1{,}3\text{ кН}$.
+      </div>
+    </div>
+
+    <!-- Задача 12 (А1) -->
+    <div class="card" id="task-12">
+      <div class="task-num">Задача 12</div>
+      <div class="task-title">Материальная точка массой $m = 80\text{ г}$ движется с ускорением, модуль которого $a = 12{,}5\text{ }\frac{\text{м}}{\text{с}^2}$, под действием двух взаимно перпендикулярных сил $\vec{F}_1$ и $\vec{F}_2$. Если модуль силы $F_1 = 0{,}8\text{ Н}$, то модуль силы $F_2$ равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(12, '1', this)">1) 0,2 Н</button>
+        <button class="btn-option" onclick="handleChoice(12, '2', this)">2) 0,3 Н</button>
+        <button class="btn-option" onclick="handleChoice(12, '3', this)">3) 0,4 Н</button>
+        <button class="btn-option" onclick="handleChoice(12, '4', this)">4) 0,6 Н</button>
+        <button class="btn-option" onclick="handleChoice(12, '5', this)">5) 1,8 Н</button>
+      </div>
+      <div class="status-msg" id="status-12"></div>
+      <button class="btn-solution" id="btn-sol-12" onclick="toggleSolution(12)">Показать Решение</button>
+      <div class="solution-box" id="sol-12">
+        <p>По второму закону Ньютона модуль равнодействующей силы:</p>
+        <div class="math-scroll">$$F = ma = 0{,}08\text{ кг} \cdot 12{,}5\text{ м/с}^2 = 1{,}0\text{ Н}.$$</div>
+        <p>Так как силы, действующие на материальную точку, направлены под прямым углом друг к другу, то по теореме Пифагора модуль силы:</p>
+        <div class="math-scroll">
+          $$F_2 = \sqrt{F^2 - F_1^2} = \sqrt{1{,}0^2 - 0{,}8^2} = \sqrt{0{,}36} = 0{,}6\text{ Н}.$$
+        </div>
+        <strong>Ответ:</strong> вариант 4 ($0{,}6\text{ Н}$).
+      </div>
+    </div>
+
+    <!-- Задача 13 (А4) -->
+    <div class="card" id="task-13">
+      <div class="task-num">Задача 13</div>
+      <div class="task-title">Автомобиль массой $m = 2 \cdot 10^3\text{ кг}$, двигавшийся со скоростью, модуль которой $v_0 = 36\text{ }\frac{\text{км}}{\text{ч}}$, остановился, пройдя после начала торможения путь $s = 25\text{ м}$. Если при торможении автомобиль двигался с постоянным ускорением, то модуль равнодействующей $F$ всех сил, действующих на автомобиль, равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(13, '1', this)">1) 2 кН</button>
+        <button class="btn-option" onclick="handleChoice(13, '2', this)">2) 4 кН</button>
+        <button class="btn-option" onclick="handleChoice(13, '3', this)">3) 6 кН</button>
+        <button class="btn-option" onclick="handleChoice(13, '4', this)">4) 8 кН</button>
+        <button class="btn-option" onclick="handleChoice(13, '5', this)">5) 9 кН</button>
+      </div>
+      <div class="status-msg" id="status-13"></div>
+      <button class="btn-solution" id="btn-sol-13" onclick="toggleSolution(13)">Показать Решение</button>
+      <div class="solution-box" id="sol-13">
+        <p>Переведем все величины в систему СИ: $m = 2000\text{ кг}$, $v_0 = 10\text{ м/с}$, $v = 0$, $s = 25\text{ м}$.</p>
+        <p>Ускорение найдем из формулы связи пути и скорости:</p>
+        <div class="math-scroll">
+          $$s = \frac{v_0^2}{2a} \implies a = \frac{v_0^2}{2s} = \frac{10^2}{2 \cdot 25} = \frac{100}{50} = 2\text{ м/с}^2$$
+        </div>
+        <p>Подставим ускорение во второй закон Ньютона:</p>
+        <div class="math-scroll">
+          $$F = m \cdot a = 2000\text{ кг} \cdot 2\text{ м/с}^2 = 4000\text{ Н} = 4\text{ кН}$$
+        </div>
+        <strong>Ответ:</strong> вариант 2 ($4\text{ кН}$).
+      </div>
+    </div>
+
+    <!-- Задача 14 (А6) -->
+    <div class="card" id="task-14">
+      <div class="task-num">Задача 14</div>
+      <div class="task-title">Кинематический закон движения тела вдоль оси координат $Ox$ имеет вид $x = A + Bt + Ct^2$, где $A = 5\text{ м}$, $B = 8\text{ }\frac{\text{м}}{\text{с}}$ и $C = -2\text{ }\frac{\text{м}}{\text{с}^2}$. Если проекция равнодействующей всех сил, действующих на тело, $F_x = -1{,}6\text{ Н}$, то масса $m$ тела равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(14, '1', this)">1) 0,2 кг</button>
+        <button class="btn-option" onclick="handleChoice(14, '2', this)">2) 0,4 кг</button>
+        <button class="btn-option" onclick="handleChoice(14, '3', this)">3) 0,5 кг</button>
+        <button class="btn-option" onclick="handleChoice(14, '4', this)">4) 0,8 кг</button>
+        <button class="btn-option" onclick="handleChoice(14, '5', this)">5) 1,6 кг</button>
+      </div>
+      <div class="status-msg" id="status-14"></div>
+      <button class="btn-solution" id="btn-sol-14" onclick="toggleSolution(14)">Показать Решение</button>
+      <div class="solution-box" id="sol-14">
+        <p>Согласно второму закону Ньютона: $F_x = m \cdot a_x \implies m = \frac{F_x}{a_x}$.</p>
+        <p>Сопоставим уравнение $x = A + Bt + Ct^2$ со стандартным уравнением $x = x_0 + v_{0x}t + \frac{a_x}{2}t^2$:</p>
+        <div class="math-scroll">
+          $$\frac{a_x}{2} = C \implies a_x = 2C = 2 \cdot (-2) = -4\text{ м/с}^2$$
+        </div>
+        <p>Теперь подставляем проекцию ускорения в формулу для массы:</p>
+        <div class="math-scroll">
+          $$m = \frac{-1{,}6\text{ Н}}{-4\text{ м/с}^2} = 0{,}4\text{ кг}$$
+        </div>
+        <strong>Ответ:</strong> вариант 2 ($0{,}4\text{ кг}$).
+      </div>
+    </div>
+
+    <!-- Задача 15 (А7) -> image4.png -->
+    <div class="card" id="task-15">
+      <div class="task-num">Задача 15</div>
+      <div class="task-title">На материальную точку массой $m = 400\text{ г}$ действуют две силы $\vec{F}_1$ и $\vec{F}_2$ (рис. 33). Если проекции силы $\vec{F}_2$ на оси координат $F_{2x} = 1{,}2\text{ Н}$ и $F_{2y} = -1{,}8\text{ Н}$, то модуль ускорения $a$ точки равен:</div>
+      <div class="task-image-box">
+        <img src="image4.png" alt="Рис. 33" onerror="this.src='https://via.placeholder.com/300x200?text=image4.png';" />
+        <div class="img-caption">Рис. 33</div>
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(15, '1', this)">1) $3{,}0\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(15, '2', this)">2) $4{,}5\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(15, '3', this)">3) $5{,}0\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(15, '4', this)">4) $6{,}0\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(15, '5', this)">5) $7{,}5\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+      </div>
+      <div class="status-msg" id="status-15"></div>
+      <button class="btn-solution" id="btn-sol-15" onclick="toggleSolution(15)">Показать Решение</button>
+      <div class="solution-box" id="sol-15">
+        <p>Проекции равнодействующей силы на оси координат $F_x = F_{1x} + F_{2x} = 0\text{ Н}$ и $F_y = F_{1y} + F_{2y} = -3{,}0\text{ Н}$. Модуль результирующей силы $F = 3{,}0\text{ Н}$.</p>
+        <p>Согласно второму закону Ньютона модуль ускорения точки:</p>
+        <div class="math-scroll">
+          $$a = \frac{F}{m} = \frac{3{,}0}{0{,}4} = 7{,}5\text{ }\frac{\text{м}}{\text{с}^2}.$$
+        </div>
+        <strong>Ответ:</strong> вариант 5 ($7{,}5\text{ м/с}^2$).
+      </div>
+    </div>
+
+    <!-- Задача 16 (А8) -> image5.png -->
+    <div class="card" id="task-16">
+      <div class="task-num">Задача 16</div>
+      <div class="task-title">На материальную точку действуют три силы, расположенные в одной плоскости (рис. 34). Если модуль силы $F_1 = 4\text{ Н}$, то модуль равнодействующей трех сил $F$ равен:</div>
+      <div class="task-image-box">
+        <img src="image5.png" alt="Рис. 34" onerror="this.src='https://via.placeholder.com/300x200?text=image5.png';" />
+        <div class="img-caption">Рис. 34</div>
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(16, '1', this)">1) 2 Н</button>
+        <button class="btn-option" onclick="handleChoice(16, '2', this)">2) 10 Н</button>
+        <button class="btn-option" onclick="handleChoice(16, '3', this)">3) 12 Н</button>
+        <button class="btn-option" onclick="handleChoice(16, '4', this)">4) 20 Н</button>
+        <button class="btn-option" onclick="handleChoice(16, '5', this)">5) 24 Н</button>
+      </div>
+      <div class="status-msg" id="status-16"></div>
+      <button class="btn-solution" id="btn-sol-16" onclick="toggleSolution(16)">Показать Решение</button>
+      <div class="solution-box" id="sol-16">
+        <p>Так как длина вектора $\vec{F}_1$, показанного на рисунке 34, составляет две клетки, то можно определить проекции всех векторов: $F_{1x} = 4\text{ Н}$, $F_{2x} = 6\text{ Н}$, $F_{3x} = -4\text{ Н}$, $F_{1y} = 0\text{ Н}$, $F_{2y} = 2\text{ Н}$ и $F_{3y} = -10\text{ Н}$.</p>
+        <p>Проекции равнодействующей силы на оси $Ox$ и $Oy$ соответственно:</p>
+        <div class="math-scroll">
+          $$F_x = F_{1x} + F_{2x} + F_{3x} = 6\text{ Н}, \quad F_y = F_{1y} + F_{2y} + F_{3y} = -8\text{ Н}.$$
+        </div>
+        <p>По теореме Пифагора модуль равнодействующей трех сил:</p>
+        <div class="math-scroll">
+          $$F = \sqrt{F_x^2 + F_y^2} = \sqrt{6^2 + (-8)^2} = 10\text{ Н}.$$
+        </div>
+        <strong>Ответ:</strong> вариант 2 ($10\text{ Н}$).
+      </div>
+    </div>
+
+    <!-- Задача 17 (А10) -->
+    <div class="card" id="task-17">
+      <div class="task-num">Задача 17</div>
+      <div class="task-title">Проекция скорости одного тела массой $m_1$, движущегося вдоль оси $Ox$, имеет вид $v_{1x} = A_1 + B_1 t$, где $A_1 = 2{,}0\text{ }\frac{\text{м}}{\text{с}}$, $B_1 = 4\text{ }\frac{\text{м}}{\text{с}^2}$. Проекция скорости другого тела массой $m_2$, движущегося вдоль оси $Ox$, имеет вид $v_{2x} = A_2 + B_2 t$, где $A_2 = 2{,}0\text{ }\frac{\text{м}}{\text{с}}$, $B_2 = -1\text{ }\frac{\text{м}}{\text{с}^2}$. Если модули равнодействующих сил, действующих на эти тела, одинаковы, то отношение $\frac{m_2}{m_1}$ равно:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(17, '1', this)">1) 1</button>
+        <button class="btn-option" onclick="handleChoice(17, '2', this)">2) 2</button>
+        <button class="btn-option" onclick="handleChoice(17, '3', this)">3) 3</button>
+        <button class="btn-option" onclick="handleChoice(17, '4', this)">4) 4</button>
+        <button class="btn-option" onclick="handleChoice(17, '5', this)">5) 5</button>
+      </div>
+      <div class="status-msg" id="status-17"></div>
+      <button class="btn-solution" id="btn-sol-17" onclick="toggleSolution(17)">Показать Решение</button>
+      <div class="solution-box" id="sol-17">
+        <p>Согласно второму закону Ньютона: $F = m \cdot a \implies m_1 \cdot a_1 = m_2 \cdot a_2 \implies \frac{m_2}{m_1} = \frac{a_1}{a_2}$.</p>
+        <p>Из уравнений скорости:</p>
+        <ul>
+          <li>Для первого тела: $a_1 = |B_1| = 4\text{ м/с}^2$</li>
+          <li>Для второго тела: $a_2 = |B_2| = 1\text{ м/с}^2$</li>
+        </ul>
+        <div class="math-scroll">
+          $$\frac{m_2}{m_1} = \frac{a_1}{a_2} = \frac{4\text{ м/с}^2}{1\text{ м/с}^2} = 4$$
+        </div>
+        <strong>Ответ:</strong> вариант 4 (4).
+      </div>
+    </div>
+
+    <!-- Задача 18 (А13) -->
+    <div class="card" id="task-18">
+      <div class="task-num">Задача 18</div>
+      <div class="task-title">На тело массой $m = 25\text{ кг}$ действуют две взаимно перпендикулярные силы, модули которых $F_1 = 45\text{ Н}$ и $F_2 = 60\text{ Н}$. Если в начальный момент времени тело покоилось, то модуль перемещения $\Delta r$ тела за промежуток времени $\Delta t = 4{,}0\text{ с}$, считая от начала движения, равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(18, '1', this)">1) 10 м</button>
+        <button class="btn-option" onclick="handleChoice(18, '2', this)">2) 15 м</button>
+        <button class="btn-option" onclick="handleChoice(18, '3', this)">3) 16 м</button>
+        <button class="btn-option" onclick="handleChoice(18, '4', this)">4) 20 м</button>
+        <button class="btn-option" onclick="handleChoice(18, '5', this)">5) 24 м</button>
+      </div>
+      <div class="status-msg" id="status-18"></div>
+      <button class="btn-solution" id="btn-sol-18" onclick="toggleSolution(18)">Показать Решение</button>
+      <div class="solution-box" id="sol-18">
+        <p>По теореме Пифагора $F = \sqrt{F_1^2 + F_2^2} = \sqrt{45^2 + 60^2} = 75\text{ Н}$.</p>
+        <p>По второму закону Ньютона $a = \frac{F}{m} = \frac{75}{25} = 3\text{ м/с}^2$.</p>
+        <p>Модуль перемещения тела:</p>
+        <div class="math-scroll">
+          $$\Delta r = \frac{a\Delta t^2}{2} = \frac{3 \cdot 4{,}0^2}{2} = 24\text{ м}.$$
+        </div>
+        <strong>Ответ:</strong> вариант 5 ($24\text{ м}$).
+      </div>
+    </div>
+
+    <!-- Задача 19 (А14) -> image6.png -->
+    <div class="card" id="task-19">
+      <div class="task-num">Задача 19</div>
+      <div class="task-title">Тело массой $m = 3\text{ кг}$ движется вдоль оси $Ox$. На рисунке 36 представлен график зависимости проекции равнодействующей силы $F_x$ от времени $t$. Если начальная скорость тела равна нулю, то модуль скорости $v$ движения тела в момент времени $t = 5\text{ с}$ равен:</div>
+      <div class="task-image-box">
+        <img src="image6.png" alt="Рис. 36" onerror="this.src='https://via.placeholder.com/350x200?text=image6.png';" />
+        <div class="img-caption">Рис. 36</div>
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(19, '1', this)">1) $0\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(19, '2', this)">2) $1\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(19, '3', this)">3) $2\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(19, '4', this)">4) $3\text{ }\frac{\text{м}}{\text{с}}$</button>
+        <button class="btn-option" onclick="handleChoice(19, '5', this)">5) $4\text{ }\frac{\text{м}}{\text{с}}$</button>
+      </div>
+      <div class="status-msg" id="status-19"></div>
+      <button class="btn-solution" id="btn-sol-19" onclick="toggleSolution(19)">Показать Решение</button>
+      <div class="solution-box" id="sol-19">
+        <p>Найдем проекцию ускорения тела на каждом из трех промежутков времени:</p>
+        <div class="math-scroll">
+          $$a_{1x} = \frac{6\text{ Н}}{3\text{ кг}} = 2\text{ }\frac{\text{м}}{\text{с}^2}, \quad a_{2x} = \frac{-3\text{ Н}}{3\text{ кг}} = -1\text{ }\frac{\text{м}}{\text{с}^2}, \quad a_{3x} = a_{1x} = 2\text{ }\frac{\text{м}}{\text{с}^2}.$$
+        </div>
+        <p>Проекции скорости в конце каждого промежутка времени:</p>
+        <div class="math-scroll">
+          $$v_{1x} = a_{1x}\Delta t_1 = 4\text{ }\frac{\text{м}}{\text{с}}$$
+          $$v_{2x} = v_{1x} + a_{2x}\Delta t_2 = 2\text{ }\frac{\text{м}}{\text{с}}$$
+          $$v_{3x} = v_{2x} + a_{3x}\Delta t_3 = 4\text{ }\frac{\text{м}}{\text{с}}$$
+        </div>
+        <strong>Ответ:</strong> вариант 5 ($4\text{ м/с}$).
+      </div>
+    </div>
+
+    <!-- Задача 20 (В1) -> image7.png и image15.png -->
+    <div class="card" id="task-20">
+      <div class="task-num">Задача 20</div>
+      <div class="task-title">На материальную точку массой $m = 9{,}0\text{ кг}$, находящуюся на гладкой горизонтальной поверхности, действуют две силы $\vec{F}_1$ и $\vec{F}_2$, направленные вдоль этой поверхности (рис. 38). Если модуль первой силы $F_1 = 18\text{ Н}$, то модуль ускорения $a$ материальной точки равен ... м/с$^2$.</div>
+      <div class="task-image-box">
+        <img src="image7.png" alt="Рис. 38" onerror="this.src='https://via.placeholder.com/300x200?text=image7.png';" />
+        <div class="img-caption">Рис. 38</div>
+      </div>
+      <div class="task-desc">Введите модуль ускорения в метрах на секунду в квадрате ($\text{м/с}^2$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-20-input" />
+        <button class="btn-main" onclick="validateCalculation(20)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-20"></div>
+      <button class="btn-solution" id="btn-sol-20" onclick="toggleSolution(20)">Показать Решение</button>
+      <div class="solution-box" id="sol-20">
+        <div class="task-image-box">
+          <img src="image15.png" alt="Рис. 407" onerror="this.src='https://via.placeholder.com/300x200?text=image15.png';" />
+          <div class="img-caption">Рис. 407</div>
+        </div>
+        <p>На рисунке 407 показана равнодействующая сила $\vec{F}$, модуль которой в два раза больше $F_1$. По второму закону Ньютона:</p>
+        <div class="math-scroll">
+          $$a = \frac{F}{m} = \frac{2 \cdot 18\text{ Н}}{9{,}0\text{ кг}} = 4\text{ }\frac{\text{м}}{\text{с}^2}.$$
+        </div>
+        <strong>Ответ:</strong> $4\text{ м/с}^2$.
+      </div>
+    </div>
+
+    <!-- Задача 21 (В2) -> image16.png в решении -->
+    <div class="card" id="task-21">
+      <div class="task-num">Задача 21</div>
+      <div class="task-title">Трамвай массой $m = 10\text{ т}$ начал от остановки равноускоренно двигаться по прямолинейному горизонтальному участку дороги. После того как трамвай проехал путь $s = 50\text{ м}$, модуль его скорости достиг $v = 10\text{ }\frac{\text{м}}{\text{с}}$. Если модуль силы сопротивления, действующей на трамвай, $F_c = 4{,}0\text{ кН}$, то модуль силы тяги $F$ двигателя трамвая равен ... кН.</div>
+      <div class="task-desc">Введите модуль силы тяги в килоньютонах ($\text{кН}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-21-input" />
+        <button class="btn-main" onclick="validateCalculation(21)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-21"></div>
+      <button class="btn-solution" id="btn-sol-21" onclick="toggleSolution(21)">Показать Решение</button>
+      <div class="solution-box" id="sol-21">
+        <div class="task-image-box">
+          <img src="image16.png" alt="Чертёж сил трамвая" onerror="this.src='https://via.placeholder.com/400x180?text=image16.png';" />
+        </div>
+        <p>По второму закону Ньютона $F - F_c = ma$, где $a = \frac{v^2}{2s}$ — модуль ускорения трамвая:</p>
+        <div class="math-scroll">
+          $$a = \frac{10^2}{2 \cdot 50} = \frac{100}{100} = 1\text{ м/с}^2$$
+          $$F = F_c + ma = 4{,}0\text{ кН} + 10\,000\text{ кг} \cdot 1\text{ м/с}^2 = 4{,}0\text{ кН} + 10\text{ кН} = 14\text{ кН}$$
+        </div>
+        <strong>Ответ:</strong> $14\text{ кН}$.
+      </div>
+    </div>
+
+    <!-- Задача 22 (В3) -> image8.png -->
+    <div class="card" id="task-22">
+      <div class="task-num">Задача 22</div>
+      <div class="task-title">Яхта массой $m = 6{,}0\text{ т}$ движется с постоянной скоростью при попутном ветре. На рисунке 39 изображены сила Архимеда $\vec{F}_A$ (выталкивающая сила) и сила сопротивления $\vec{F}_c$, с которой вода действует на яхту. Если ветер действует на яхту с силой $\vec{F}_{\text{в}}$, направленной горизонтально, то модуль этой силы $F_{\text{в}}$ равен ... кН.</div>
+      <div class="task-image-box">
+        <img src="image8.png" alt="Рис. 39" onerror="this.src='https://via.placeholder.com/300x200?text=image8.png';" />
+        <div class="img-caption">Рис. 39</div>
+      </div>
+      <div class="task-desc">Введите модуль силы ветра в килоньютонах ($\text{кН}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-22-input" />
+        <button class="btn-main" onclick="validateCalculation(22)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-22"></div>
+      <button class="btn-solution" id="btn-sol-22" onclick="toggleSolution(22)">Показать Решение</button>
+      <div class="solution-box" id="sol-22">
+        <p>По условию яхта движется с постоянной скоростью ($v = \text{const}$), а значит, её ускорение равно нулю ($a = 0$). Векторная сумма всех сил равна нулю:</p>
+        <div class="math-scroll">$$\vec{F}_{\text{в}} + \vec{F}_c + \vec{F}_A + \vec{F}_{\text{т}} = 0$$</div>
+        <p>В проекции на горизонтальную ось $OX$: $F_{\text{в}} - F_c = 0 \implies F_{\text{в}} = F_c$.</p>
+        <p><strong>Находим масштаб сетки через вертикальную ось:</strong></p>
+        <div class="math-scroll">
+          $$F_A - F_{\text{т}} = 0 \implies F_A = F_{\text{т}} = mg = 6000\text{ кг} \cdot 10\text{ м/с}^2 = 60\text{ кН}$$
+          $$1\text{ клетка} = \frac{60\text{ кН}}{5} = 12\text{ кН}$$
+          $$F_{\text{в}} = F_c = 1 \cdot 12\text{ кН} = 12\text{ кН}$$
+        </div>
+        <strong>Ответ:</strong> $12\text{ кН}$.
+      </div>
+    </div>
+
+    <!-- Задача 23 (№5 Ваня) -->
+    <div class="card" id="task-23">
+      <div class="task-num">Задача 23</div>
+      <div class="task-title">Действует ли сила тяжести на Ваню, когда он подпрыгнул вверх?</div>
+      <div class="options-vertical">
+        <button class="btn-option" onclick="handleChoice(23, 'а', this)">а) Действует.</button>
+        <button class="btn-option" onclick="handleChoice(23, 'б', this)">б) Если Ваня не касается Земли, то не действует.</button>
+        <button class="btn-option" onclick="handleChoice(23, 'в', this)">в) Действует только тогда, когда Ваня опускается вниз.</button>
+        <button class="btn-option" onclick="handleChoice(23, 'г', this)">г) Действует только тогда, когда Ваня поднимается вверх.</button>
+        <button class="btn-option" onclick="handleChoice(23, 'д', this)">д) Не действует.</button>
+      </div>
+      <div class="status-msg" id="status-23"></div>
+      <button class="btn-solution" id="btn-sol-23" onclick="toggleSolution(23)">Показать Решение</button>
+      <div class="solution-box" id="sol-23">
+        <ol>
+          <li><strong>Сила тяжести</strong> — это сила гравитационного притяжения, с которой Земля притягивает к себе любое тело, имеющее массу. Земля продолжает притягивать Ваню с силой $F_{\text{т}} = mg$ в любой точке его траектории.</li>
+          <li><strong>Вес тела</strong> — это сила, с которой тело давит на опору или растягивает подвес. В полёте вес Вани действительно равен нулю (невесомость).</li>
+        </ol>
+        <p>Следовательно, сила тяжести на Ваню <strong>действует всегда</strong>.</p>
+        <strong>Ответ:</strong> а (Действует).
+      </div>
+    </div>
+
+    <!-- Задача 24 (№6 гиря) -->
+    <div class="card" id="task-24">
+      <div class="task-num">Задача 24</div>
+      <div class="task-title">Во сколько раз сила тяжести, действующая на 16-килограммовую гирю, больше силы тяжести, действующей на 80-граммовую шоколадку?</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(24, 'а', this)">а) В 2 раза</button>
+        <button class="btn-option" onclick="handleChoice(24, 'б', this)">б) В 10 раз</button>
+        <button class="btn-option" onclick="handleChoice(24, 'в', this)">в) В 20 раз</button>
+        <button class="btn-option" onclick="handleChoice(24, 'г', this)">г) В 100 раз</button>
+        <button class="btn-option" onclick="handleChoice(24, 'д', this)">д) В 200 раз</button>
+      </div>
+      <div class="status-msg" id="status-24"></div>
+      <button class="btn-solution" id="btn-sol-24" onclick="toggleSolution(24)">Показать Решение</button>
+      <div class="solution-box" id="sol-24">
+        <p>Сила тяжести любого тела рассчитывается по формуле: $F_{\text{т}} = m \cdot g$.</p>
+        <div class="math-scroll">
+          $$N = \frac{F_{\text{т.гири}}}{F_{\text{т.шок}}} = \frac{m_{\text{гири}} \cdot g}{m_{\text{шок}} \cdot g} = \frac{m_{\text{гири}}}{m_{\text{шок}}} = \frac{16\text{ кг}}{0{,}08\text{ кг}} = 200\text{ раз}$$
+        </div>
+        <strong>Ответ:</strong> д (в 200 раз).
+      </div>
+    </div>
+
+    <!-- Задача 25 (№3 магнит) -> image9.png -->
+    <div class="card" id="task-25">
+      <div class="task-num">Задача 25</div>
+      <div class="task-title">Магнит скользит равномерно по вертикальной дверце холодильника под действием силы тяжести $F_{\text{тяж}}$. Кроме силы тяжести $F_{\text{тяж}}$, на магнит действуют сила трения $F_{\text{тр}}$, сила магнитного притяжения $F_{\text{м}}$ и сила реакции опоры $N$ (рисунок). Какая из этих сил связана с силой давления $F_{\text{дав}}$ магнита на поверхность холодильника по третьему закону Ньютона?</div>
+      <div class="task-image-box">
+        <img src="image9.png" alt="Магнит на дверце" onerror="this.src='https://via.placeholder.com/250x200?text=image9.png';" />
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(25, 'а', this)">а) $F_{\text{дв}}$</button>
+        <button class="btn-option" onclick="handleChoice(25, 'б', this)">б) $F_{\text{тр}}$</button>
+        <button class="btn-option" onclick="handleChoice(25, 'в', this)">в) $F_{\text{тяж}}$</button>
+        <button class="btn-option" onclick="handleChoice(25, 'г', this)">г) $N$</button>
+        <button class="btn-option" onclick="handleChoice(25, 'д', this)">д) никакая</button>
+      </div>
+      <div class="status-msg" id="status-25"></div>
+      <button class="btn-solution" id="btn-sol-25" onclick="toggleSolution(25)">Показать Решение</button>
+      <div class="solution-box" id="sol-25">
+        <p>В нашей паре взаимодействуют два тела: <strong>магнит</strong> и <strong>поверхность холодильника</strong>.</p>
+        <p>Действие магнита: магнит давит на дверцу холодильника с силой давления $\vec{F}_{\text{дав}}$ (направлена вправо, вглубь дверцы).</p>
+        <p>Противодействие холодильника: дверцу холодильника отталкивает магнит обратно с силой реакции опоры $\vec{N}$ (направлена влево).</p>
+        <strong>Ответ:</strong> г ($N$).
+      </div>
+    </div>
+
+    <!-- Задача 26 (А3) -->
+    <div class="card" id="task-26">
+      <div class="task-num">Задача 26</div>
+      <div class="task-title">Модуль веса скелетона (спортивных саней), стоящего на горизонтальной поверхности ледовой трассы, $P = 320\text{ Н}$. Если на скелетон ляжет спортсмен массой $m = 62{,}0\text{ кг}$, то модуль силы упругости $F_{\text{упр}}$, с которой лед будет действовать на скелетон, станет равным:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(26, '1', this)">1) 300 Н</button>
+        <button class="btn-option" onclick="handleChoice(26, '2', this)">2) 320 Н</button>
+        <button class="btn-option" onclick="handleChoice(26, '3', this)">3) 382 Н</button>
+        <button class="btn-option" onclick="handleChoice(26, '4', this)">4) 620 Н</button>
+        <button class="btn-option" onclick="handleChoice(26, '5', this)">5) 940 Н</button>
+      </div>
+      <div class="status-msg" id="status-26"></div>
+      <button class="btn-solution" id="btn-sol-26" onclick="toggleSolution(26)">Показать Решение</button>
+      <div class="solution-box" id="sol-26">
+        <p>По третьему закону Ньютона модуль силы упругости равен модулю силы давления скелетона на лед:</p>
+        <div class="math-scroll">
+          $$F_{\text{упр}} = P + mg = 320\text{ Н} + 62{,}0\text{ кг} \cdot 10\text{ м/с}^2 = 320 + 620 = 940\text{ Н}.$$
+        </div>
+        <strong>Ответ:</strong> вариант 5 ($940\text{ Н}$).
+      </div>
+    </div>
+
+    <!-- Задача 27 (А9) -> image10.png и image17.png -->
+    <div class="card" id="task-27">
+      <div class="task-num">Задача 27</div>
+      <div class="task-title">Зависимость проекции скорости $v_x$ от времени $t$ груза массой $m = 0{,}6\text{ кг}$, который поднимают вертикально вверх с помощью троса, представлена на графике (рис. 35). Модуль силы натяжения троса $F_{\text{н}}$ равен:</div>
+      <div class="task-image-box">
+        <img src="image10.png" alt="Рис. 35" onerror="this.src='https://via.placeholder.com/300x200?text=image10.png';" />
+        <div class="img-caption">Рис. 35</div>
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(27, '1', this)">1) 0,9 Н</button>
+        <button class="btn-option" onclick="handleChoice(27, '2', this)">2) 3,6 Н</button>
+        <button class="btn-option" onclick="handleChoice(27, '3', this)">3) 6,0 Н</button>
+        <button class="btn-option" onclick="handleChoice(27, '4', this)">4) 6,9 Н</button>
+        <button class="btn-option" onclick="handleChoice(27, '5', this)">5) 7,2 Н</button>
+      </div>
+      <div class="status-msg" id="status-27"></div>
+      <button class="btn-solution" id="btn-sol-27" onclick="toggleSolution(27)">Показать Решение</button>
+      <div class="solution-box" id="sol-27">
+        <div class="task-image-box">
+          <img src="image17.png" alt="Рис. 406" onerror="this.src='https://via.placeholder.com/300x200?text=image17.png';" />
+          <div class="img-caption">Рис. 406</div>
+        </div>
+        <p>Используя график (рис. 35), найдем модуль ускорения груза: $a = \frac{3{,}6}{2{,}4} = 1{,}5\text{ }\frac{\text{м}}{\text{с}^2}$.</p>
+        <p>На рисунке 406 показаны силы, действующие на груз. Согласно второму закону Ньютона:</p>
+        <div class="math-scroll">
+          $$F_{\text{н}} = m(g + a) = 0{,}6(10 + 1{,}5) = 0{,}6 \cdot 11{,}5 = 6{,}9\text{ Н}.$$
+        </div>
+        <strong>Ответ:</strong> вариант 4 ($6{,}9\text{ Н}$).
+      </div>
+    </div>
+
+    <!-- Задача 28 (А11) -> image18.png в решении -->
+    <div class="card" id="task-28">
+      <div class="task-num">Задача 28</div>
+      <div class="task-title">Нить продета через бусинку массой $m = 8{,}0\text{ г}$ и натянута вертикально. Бусинка соскальзывает по нити. Если модуль силы трения, действующей на бусинку, $F_{\text{тр}} = 60\text{ мН}$, то модуль ускорения $a$ бусинки равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(28, '1', this)">1) $2{,}5\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(28, '2', this)">2) $2{,}8\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(28, '3', this)">3) $3{,}2\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(28, '4', this)">4) $7{,}5\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(28, '5', this)">5) $9{,}8\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+      </div>
+      <div class="status-msg" id="status-28"></div>
+      <button class="btn-solution" id="btn-sol-28" onclick="toggleSolution(28)">Показать Решение</button>
+      <div class="solution-box" id="sol-28">
+        <div class="task-image-box">
+          <img src="image18.png" alt="Чертёж сил" onerror="this.src='https://via.placeholder.com/400x250?text=image18.png';" />
+        </div>
+        <p>По 2-му закону Ньютона: $\vec{F}_{\text{тр}} + \vec{F}_{\text{т}} = m\vec{a}$.</p>
+        <p>В проекции на ось $Oy$ (вниз):</p>
+        <div class="math-scroll">
+          $$mg - F_{\text{тр}} = ma \implies a = \frac{mg - F_{\text{тр}}}{m} = \frac{8{,}0 \cdot 10^{-3} \cdot 10 - 60 \cdot 10^{-3}}{8{,}0 \cdot 10^{-3}} = 2{,}5\text{ м/с}^2$$
+        </div>
+        <strong>Ответ:</strong> вариант 1 ($2{,}5\text{ м/с}^2$).
+      </div>
+    </div>
+
+    <!-- Задача 29 (А12) -> image18.png в решении -->
+    <div class="card" id="task-29">
+      <div class="task-num">Задача 29</div>
+      <div class="task-title">Если при помощи веревки можно равномерно поднимать груз, масса которого не превышает $m_1 = 24\text{ кг}$, то модуль максимального ускорения $a_{\text{max}}$, с которым на этой же веревке можно поднимать груз массой $m_2 = 20\text{ кг}$, равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(29, '1', this)">1) $1{,}2\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(29, '2', this)">2) $1{,}6\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(29, '3', this)">3) $2{,}0\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(29, '4', this)">4) $2{,}4\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+        <button class="btn-option" onclick="handleChoice(29, '5', this)">5) $2{,}8\text{ }\frac{\text{м}}{\text{с}^2}$</button>
+      </div>
+      <div class="status-msg" id="status-29"></div>
+      <button class="btn-solution" id="btn-sol-29" onclick="toggleSolution(29)">Показать Решение</button>
+      <div class="solution-box" id="sol-29">
+        <div class="task-image-box">
+          <img src="image22.png" alt="Чертёж сил" onerror="this.src='https://via.placeholder.com/400x250?text=image22.png';" />
+        </div>
+        <ol>
+          <li>Равномерное поднятие груза $m_1 = 24\text{ кг}$ ($a = 0$):
+            <div class="math-scroll">$$F_{\text{н.max}} = m_1 g$$</div>
+          </li>
+          <li>Поднимаем груз $m_2$ с ускорением $a_{\text{max}}$:
+            <div class="math-scroll">$$F_{\text{н.max}} - m_2 g = m_2 a_{\text{max}} \implies m_1 g - m_2 g = m_2 a_{\text{max}}$$</div>
+            <div class="math-scroll">$$a_{\text{max}} = \frac{(m_1 - m_2)g}{m_2} = \frac{(24 - 20) \cdot 10}{20} = 2{,}0\text{ м/с}^2$$</div>
+          </li>
+        </ol>
+        <strong>Ответ:</strong> вариант 3 ($2{,}0\text{ м/с}^2$).
+      </div>
+    </div>
+
+    <!-- Задача 30 (№10 качели) -> image19.png в решении -->
+    <div class="card" id="task-30">
+      <div class="task-num">Задача 30</div>
+      <div class="task-title">Алиса ($m = 45\text{ кг}$) качается на качелях. Определите модуль силы $F_{\text{A}}$, с которой Алиса действует на сиденье в нижней точке траектории, если модуль её скорости в этот момент $v = 5{,}0\text{ м/с}$, а длина верёвок $L = 2{,}5\text{ м}$.</div>
+      <div class="task-desc">Введите силу в Ньютонах ($\text{Н}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-30-input" />
+        <button class="btn-main" onclick="validateCalculation(30)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-30"></div>
+      <button class="btn-solution" id="btn-sol-30" onclick="toggleSolution(30)">Показать Решение</button>
+      <div class="solution-box" id="sol-30">
+        <div class="task-image-box">
+          <img src="image19.png" alt="Чертёж сил качелей" onerror="this.src='https://via.placeholder.com/350x250?text=image19.png';" />
+        </div>
+        <p>По 3 закону Ньютона Алиса действует на сиденье с такой же силой, как сиденье действует на неё: $\vec{P} = -\vec{N}$.</p>
+        <p>По 2 закону Ньютона в проекции на ось $Oy$ (вверх):</p>
+        <div class="math-scroll">
+          $$N - mg = ma_{\text{ц}} \implies N = m(a_{\text{ц}} + g)$$
+          $$a_{\text{ц}} = \frac{v^2}{L} = \frac{5{,}0^2}{2{,}5} = 10\text{ м/с}^2$$
+          $$N = 45(10 + 10) = 900\text{ Н}$$
+        </div>
+        <strong>Ответ:</strong> $900\text{ Н}$.
+      </div>
+    </div>
+
+    <!-- Задача 31 (В4) -> image11.png -->
+    <div class="card" id="task-31">
+      <div class="task-num">Задача 31</div>
+      <div class="task-title">На тело, равноускоренно движущееся по горизонтальной поверхности с ускорением, модуль которого $a = 2{,}0\text{ }\frac{\text{м}}{\text{с}^2}$, действуют четыре силы, две из которых $\vec{F}$ и $\vec{F}_{\text{тр}}$ показаны на рисунке 40. Если модуль силы трения $F_{\text{тр}} = 8{,}0\text{ Н}$, то на тело действует сила тяжести, модуль $mg$ которой равен ... Н.</div>
+      <div class="task-image-box">
+        <img src="image11.png" alt="Рис. 40" onerror="this.src='https://via.placeholder.com/300x180?text=image11.png';" />
+        <div class="img-caption">Рис. 40</div>
+      </div>
+      <div class="task-desc">Введите модуль силы тяжести в Ньютонах ($\text{Н}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-31-input" />
+        <button class="btn-main" onclick="validateCalculation(31)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-31"></div>
+      <button class="btn-solution" id="btn-sol-31" onclick="toggleSolution(31)">Показать Решение</button>
+      <div class="solution-box" id="sol-31">
+        <p>В соответствии с рисунком 40 модуль силы $F = \frac{5}{2}F_{\text{тр}} = 2{,}5 \cdot 8{,}0 = 20\text{ Н}$.</p>
+        <p>Из второго закона Ньютона следует: $F - F_{\text{тр}} = ma \implies 20 - 8 = m \cdot 2{,}0 \implies m = 6\text{ кг}$.</p>
+        <div class="math-scroll">
+          $$mg = 6\text{ кг} \cdot 10\text{ м/с}^2 = 60\text{ Н}.$$
+        </div>
+        <strong>Ответ:</strong> $60\text{ Н}$.
+      </div>
+    </div>
+
+    <!-- Задача 32 (В5) -> image20.png в решении -->
+    <div class="card" id="task-32">
+      <div class="task-num">Задача 32</div>
+      <div class="task-title">Шар массой $m = 0{,}50\text{ кг}$, падая без начальной скорости с высоты $h_1 = 10\text{ м}$, попадает в сугроб и пробивает в нем яму глубиной $h_2 = 80\text{ см}$. Модуль силы сопротивления воздуха $F_{c1} = 0{,}60\text{ Н}$. Если движение шара в воздухе и в снегу было равноускоренным, то модуль силы сопротивления $F_{c2}$, действующей на шар в снегу, равен ... Н.</div>
+      <div class="task-desc">Введите модуль силы сопротивления в Ньютонах ($\text{Н}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-32-input" />
+        <button class="btn-main" onclick="validateCalculation(32)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-32"></div>
+      <button class="btn-solution" id="btn-sol-32" onclick="toggleSolution(32)">Показать Решение</button>
+      <div class="solution-box" id="sol-32">
+        <div class="task-image-box">
+          <img src="image20.png" alt="Чертёж шара в сугробе" onerror="this.src='https://via.placeholder.com/400x300?text=image20.png';" />
+        </div>
+        <ol>
+          <li>До падения в сугроб:
+            <div class="math-scroll">$$a_1 = \frac{mg - F_{c1}}{m} = \frac{5 - 0{,}6}{0{,}5} = 8{,}8\text{ м/с}^2$$</div>
+            <div class="math-scroll">$$v = \sqrt{2a_1 h_1} = \sqrt{2 \cdot 8{,}8 \cdot 10} = \sqrt{176} \approx 13{,}3\text{ м/с}$$</div>
+          </li>
+          <li>Движение в сугробе ($h_2 = 0{,}8\text{ м}$):
+            <div class="math-scroll">$$a_2 = \frac{v^2}{2h_2} = \frac{176}{2 \cdot 0{,}8} = 110\text{ м/с}^2$$</div>
+          </li>
+          <li>По второму закону Ньютона в сугробе:
+            <div class="math-scroll">$$F_{c2} = m(g + a_2) = 0{,}5(10 + 110) = 60\text{ Н}$$</div>
+          </li>
+        </ol>
+        <strong>Ответ:</strong> $60\text{ Н}$.
+      </div>
+    </div>
+
+    <!-- Задача 33 (В15) -> image21.png в решении -->
+    <div class="card" id="task-33">
+      <div class="task-num">Задача 33</div>
+      <div class="task-title">С поверхности Земли вертикально вверх было брошено тело со скоростью, модуль которой $v_0 = 32\text{ }\frac{\text{м}}{\text{с}}$. Если сила сопротивления воздуха не зависит от скорости, а модуль этой силы составляет $\eta = 0{,}6$ модуля силы тяжести, действующей на тело, то тело находилось в полете в течение промежутка времени $\Delta t$, равного ... с.</div>
+      <div class="task-desc">Введите полное время полета в секундах ($\text{с}$):</div>
+      <div class="input-action-row">
+        <input type="text" class="input-text" id="calc-33-input" />
+        <button class="btn-main" onclick="validateCalculation(33)">Проверить</button>
+      </div>
+      <div class="status-msg" id="status-33"></div>
+      <button class="btn-solution" id="btn-sol-33" onclick="toggleSolution(33)">Показать Решение</button>
+      <div class="solution-box" id="sol-33">
+        <div class="task-image-box">
+          <img src="image21.png" alt="Чертёж броска тела" onerror="this.src='https://via.placeholder.com/400x300?text=image21.png';" />
+        </div>
+        <p><strong>1. Движение вверх:</strong></p>
+        <div class="math-scroll">
+          $$a_1 = \frac{0{,}6mg + mg}{m} = 1{,}6g = 16\text{ м/с}^2$$
+          $$t_1 = \frac{v_0}{a_1} = \frac{32}{16} = 2\text{ с}$$
+          $$H = \frac{v_0^2}{2a_1} = \frac{32^2}{2 \cdot 16} = 32\text{ м}$$
+        </div>
+        <p><strong>2. Движение вниз:</strong></p>
+        <div class="math-scroll">
+          $$a_2 = \frac{mg - 0{,}6mg}{m} = 0{,}4g = 4\text{ м/с}^2$$
+          $$t_2 = \sqrt{\frac{2H}{a_2}} = \sqrt{\frac{2 \cdot 32}{4}} = 4\text{ с}$$
+        </div>
+        <p><strong>3. Полное время полета:</strong></p>
+        <div class="math-scroll">
+          $$\Delta t = t_1 + t_2 = 2\text{ с} + 4\text{ с} = 6\text{ с}$$
+        </div>
+        <strong>Ответ:</strong> $6\text{ с}$ (или $7\text{ с}$).
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Рендеринг формул KaTeX
+    function initMath() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    const correctAnswers = {
+      9: ['в', '3'],
+      12: ['4'],
+      13: ['2'],
+      14: ['2'],
+      15: ['5'],
+      16: ['2'],
+      17: ['4'],
+      18: ['5'],
+      19: ['5'],
+      23: ['а', '1'],
+      24: ['д', '5'],
+      25: ['г', '4'],
+      26: ['5'],
+      27: ['4'],
+      28: ['1'],
+      29: ['3']
+    };
+
+    function handleChoice(taskId, value, buttonEl) {
+      const card = document.getElementById(`task-${taskId}`);
+      const buttons = card.querySelectorAll('.btn-option');
+      const status = document.getElementById(`status-${taskId}`);
+      const btnSol = document.getElementById(`btn-sol-${taskId}`);
+
+      buttons.forEach(b => b.classList.remove('correct', 'incorrect'));
+
+      const isCorrect = correctAnswers[taskId] && correctAnswers[taskId].includes(value);
+
+      if (isCorrect) {
+        buttonEl.classList.add('correct');
+        status.className = 'status-msg correct';
+        status.innerHTML = '✓ Верно! Отличная работа.';
+        btnSol.style.display = 'none';
+      } else {
+        buttonEl.classList.add('incorrect');
+        status.className = 'status-msg incorrect';
+        status.innerHTML = '✕ Неверно. Попробуйте еще раз или посмотрите решение.';
+        btnSol.style.display = 'inline-block';
+      }
+    }
+
+    function parseVal(str) {
+      if (!str) return NaN;
+      let s = str.trim().toLowerCase().replace(/\s+/g, '').replace(',', '.');
+      s = s.replace('·', '*').replace('x', '*').replace('х', '*');
+      s = s.replace(/10\^(\-?\d+)/g, '1e$1');
+      s = s.replace(/\*1e/g, 'e');
+      return parseFloat(s);
+    }
+
+    function validateCalculation(taskId) {
+      const inputEl = document.getElementById(`calc-${taskId}-input`);
+      const val = parseVal(inputEl.value);
+      const status = document.getElementById(`status-${taskId}`);
+      const btnSol = document.getElementById(`btn-sol-${taskId}`);
+      let isCorrect = false;
+
+      // Задача 1: 48 см3
+      if (taskId === 1) isCorrect = Math.abs(val - 48) < 1;
+      // Задача 2: 0.75 г/см3
+      else if (taskId === 2) isCorrect = Math.abs(val - 0.75) < 0.05 || Math.abs(val - 750) < 10;
+      // Задача 3: 3 Н
+      else if (taskId === 3) isCorrect = Math.abs(val - 3) < 0.2;
+      // Задача 4: 50 Н
+      else if (taskId === 4) isCorrect = Math.abs(val - 50) < 1;
+      // Задача 5: 5 м/с2
+      else if (taskId === 5) isCorrect = Math.abs(val - 5) < 0.2;
+      // Задача 6: 2 кН (или 2000 Н)
+      else if (taskId === 6) isCorrect = Math.abs(val - 2) < 0.1 || Math.abs(val - 2000) < 50;
+      // Задача 7: 2
+      else if (taskId === 7) isCorrect = Math.abs(val - 2) < 0.1;
+      // Задача 8: 3.125 кг
+      else if (taskId === 8) isCorrect = Math.abs(val - 3.125) < 0.05 || Math.abs(val - 3.1) < 0.1;
+      // Задача 10: 2 м/с2
+      else if (taskId === 10) isCorrect = Math.abs(val - 2) < 0.1;
+      // Задача 11: 1.3 кН (или 1300 Н)
+      else if (taskId === 11) isCorrect = Math.abs(val - 1.3) < 0.1 || Math.abs(val - 1300) < 50;
+      // Задача 20: 4 м/с2
+      else if (taskId === 20) isCorrect = Math.abs(val - 4) < 0.2;
+      // Задача 21: 14 кН
+      else if (taskId === 21) isCorrect = Math.abs(val - 14) < 0.5;
+      // Задача 22: 12 кН
+      else if (taskId === 22) isCorrect = Math.abs(val - 12) < 0.5;
+      // Задача 30: 900 Н
+      else if (taskId === 30) isCorrect = Math.abs(val - 900) < 10;
+      // Задача 31: 60 Н
+      else if (taskId === 31) isCorrect = Math.abs(val - 60) < 1;
+      // Задача 32: 60 Н
+      else if (taskId === 32) isCorrect = Math.abs(val - 60) < 1;
+      // Задача 33: 6 с (или 7 с)
+      else if (taskId === 33) isCorrect = Math.abs(val - 6) < 0.5 || Math.abs(val - 7) < 0.5;
+
+      if (isCorrect) {
+        status.className = 'status-msg correct';
+        status.innerHTML = '✓ Правильно! Расчет выполнен верно.';
+        btnSol.style.display = 'none';
+      } else {
+        status.className = 'status-msg incorrect';
+        status.innerHTML = '✕ Не сходится. Перепроверьте расчет.';
+        btnSol.style.display = 'inline-block';
+      }
+    }
+
+    function toggleSolution(taskId) {
+      const box = document.getElementById(`sol-${taskId}`);
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+      } else {
+        box.style.display = 'block';
+        if (window.renderMathInElement) {
+          renderMathInElement(box, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "$", right: "$", display: false }
+            ],
+            throwOnError: false
+          });
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initMath, 200);
+    });
+  </script>
+</body>
+</html>
