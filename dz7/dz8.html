@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ДЗ 19-20. Сила упругости. Закон Всемирного тяготения</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="initMath()"></script>
+  <style>
+    :root {
+      --bg-main: #090a10;
+      --card-bg: rgba(18, 22, 34, 0.72);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --danger: #f43f5e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.6;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(99, 102, 241, 0.8);
+    }
+
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 40px 20px 80px 20px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    .task-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 32px;
+      backdrop-filter: blur(24px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      transition: border-color 0.2s ease;
+    }
+    .task-card:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    .task-header {
+      margin-bottom: 18px;
+    }
+    .task-badge {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 8px;
+      background: rgba(139, 92, 246, 0.15);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+
+    .task-text {
+      font-size: 1.02rem;
+      color: #e2e8f0;
+      margin-bottom: 22px;
+    }
+
+    .task-image-wrap {
+      text-align: center;
+      margin: 18px 0;
+    }
+    .task-image-wrap img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .btn-option {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      padding: 12px 18px;
+      border-radius: 12px;
+      text-align: left;
+      font-family: inherit;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-option:hover:not(:disabled) {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+    .btn-option.correct {
+      background: rgba(16, 185, 129, 0.2) !important;
+      border-color: #10b981 !important;
+      color: #6ee7b7 !important;
+    }
+    .btn-option.incorrect {
+      background: rgba(244, 63, 94, 0.2) !important;
+      border-color: #f43f5e !important;
+      color: #fda4af !important;
+    }
+
+    .calc-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .calc-row label {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+    .calc-input-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .calc-input {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .calc-input:focus {
+      border-color: #8b5cf6;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    .btn-check {
+      background: var(--primary-gradient);
+      border: none;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .btn-check:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+    .btn-check:active {
+      transform: translateY(0);
+    }
+
+    .feedback-msg {
+      display: none;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .feedback-msg.correct {
+      display: block;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+    .feedback-msg.incorrect {
+      display: block;
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: #f87171;
+    }
+
+    .btn-solution-toggle {
+      display: none;
+      margin-top: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn-solution-toggle:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .solution-box {
+      display: none;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 20px;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+    .solution-title {
+      color: #a5b4fc;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+    }
+    .solution-content {
+      font-size: 0.98rem;
+      color: #cbd5e1;
+      line-height: 1.7;
+    }
+    .math-scroll {
+      overflow-x: auto;
+      max-width: 100%;
+      padding: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <div class="hero-badge">ДЗ 19-20</div>
+      <h1>Сила упругости. Закон Всемирного тяготения</h1>
+      <p>Выберите вариант ответа или введите полученное числовое значение.</p>
+    </div>
+
+    <!-- Задача 1 -->
+    <div class="task-card" id="task-1">
+      <div class="task-header"><span class="task-badge">Задача 1</span></div>
+      <div class="task-text">А1. Для трех упругих жгутов построили графики зависимости модуля силы упругости $F_{\text{упр}}$, возникающей в деформированном жгуте, от его абсолютного удлинения $\Delta l$ (рис. 57). Если жесткости первого, второго и третьего жгутов соответственно $k_1$, $k_2$ и $k_3$, то для них правильным является соотношение, указанное под номером:</div>
+      <div class="task-image-wrap">
+        <img src="image1.png" alt="Рис. 57" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+57';">
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(1, 1, this)">1) $k_1 < k_2 < k_3$;</button>
+        <button class="btn-option" onclick="handleChoice(1, 2, this)">2) $k_2 < k_1 < k_3$;</button>
+        <button class="btn-option" onclick="handleChoice(1, 3, this)">3) $k_3 < k_2 < k_1$;</button>
+        <button class="btn-option" onclick="handleChoice(1, 4, this)">4) $k_2 < k_3 < k_1$;</button>
+        <button class="btn-option" onclick="handleChoice(1, 5, this)">5) $k_3 < k_1 < k_2$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-1"></div>
+      <button class="btn-solution-toggle" id="btn-sol-1" onclick="toggleSolution(1)">Показать Решение</button>
+      <div class="solution-box" id="sol-1">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А1. По закону Гука жесткость жгута $k = \frac{F_{\text{упр}}}{\Delta l}$. Чем больше угол наклона графика (рис. 57) $F_{\text{упр}}(\Delta l)$, тем больше жесткость жгута. Следовательно, правильным соотношением является: $k_3 < k_2 < k_1$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 2 -->
+    <div class="task-card" id="task-2">
+      <div class="task-header"><span class="task-badge">Задача 2</span></div>
+      <div class="task-text">А2. На рисунке 58 показан график зависимости модуля силы упругости $F_{\text{упр}}$, возникающей в легкой упругой резиновой полоске, от ее длины $l$. Жесткость $k$ полоски равна:</div>
+      <div class="task-image-wrap">
+        <img src="image2.png" alt="Рис. 58" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+58';">
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(2, 1, this)">1) $24\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(2, 2, this)">2) $25\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(2, 3, this)">3) $30\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(2, 4, this)">4) $50\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(2, 5, this)">5) $60\text{ }\frac{\text{Н}}{\text{м}}$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-2"></div>
+      <button class="btn-solution-toggle" id="btn-sol-2" onclick="toggleSolution(2)">Показать Решение</button>
+      <div class="solution-box" id="sol-2">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А2. Используя закон Гука и данные графика (рис. 58), найдем жесткость резиновой полоски: $k = \frac{F_{\text{упр}}}{l - l_0} = 60\text{ }\frac{\text{Н}}{\text{м}}$, где $F_{\text{упр}} = 6,0\text{ Н}$, $l = 25\text{ см}$ и $l_0 = 15\text{ см}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 3 -->
+    <div class="task-card" id="task-3">
+      <div class="task-header"><span class="task-badge">Задача 3</span></div>
+      <div class="task-text">А4. Если пружину укоротили на величину $\varepsilon = 20\text{ }\%$, то относительное изменение жесткости пружины $\eta$ равно:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(3, 1, this)">1) $10\text{ }\%$;</button>
+        <button class="btn-option" onclick="handleChoice(3, 2, this)">2) $20\text{ }\%$;</button>
+        <button class="btn-option" onclick="handleChoice(3, 3, this)">3) $25\text{ }\%$;</button>
+        <button class="btn-option" onclick="handleChoice(3, 4, this)">4) $40\text{ }\%$;</button>
+        <button class="btn-option" onclick="handleChoice(3, 5, this)">5) $80\text{ }\%$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-3"></div>
+      <button class="btn-solution-toggle" id="btn-sol-3" onclick="toggleSolution(3)">Показать Решение</button>
+      <div class="solution-box" id="sol-3">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А4. Жесткость пружины обратно пропорциональна длине пружины. Пусть жесткость целой пружины равна $k_1$, тогда жесткость укороченной пружины $k_2 = 1,25k_1$. Относительное изменение жесткости пружины
+          <div class="math-scroll">$$\eta = \frac{k_2 - k_1}{k_1} \cdot 100\text{ }\% = 25\text{ }\%.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 4 -->
+    <div class="task-card" id="task-4">
+      <div class="task-header"><span class="task-badge">Задача 4</span></div>
+      <div class="task-text">А5. Брусок массой $m = 3,0\text{ кг}$ тянут по горизонтальной поверхности с постоянной скоростью с помощью горизонтальной невесомой пружины. Коэффициент трения между бруском и поверхностью $\mu = 0,25$. Если удлинение пружины $\Delta l = 15\text{ см}$, то ее жесткость $k$ равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(4, 1, this)">1) $50\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(4, 2, this)">2) $60\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(4, 3, this)">3) $75\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(4, 4, this)">4) $80\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(4, 5, this)">5) $90\text{ }\frac{\text{Н}}{\text{м}}$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-4"></div>
+      <button class="btn-solution-toggle" id="btn-sol-4" onclick="toggleSolution(4)">Показать Решение</button>
+      <div class="solution-box" id="sol-4">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А5. На рисунке 431 показаны силы, действующие на брусок. Запишем второй закон Ньютона: $m\vec{g} + \vec{N} + \vec{F}_{\text{упр}} + \vec{F}_{\text{тр}} = \vec{0}$. В проекциях на координатные оси $Ox$ и $Oy$ получим: $F_{\text{упр}} - F_{\text{тр}} = 0$ и $N - mg = 0$. Модуль силы трения $F_{\text{тр}} = \mu N$. По закону Гука $F_{\text{упр}} = k\Delta l$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$k = \frac{\mu mg}{\Delta l} = 50\text{ }\frac{\text{Н}}{\text{м}}.$$</div>
+          <div class="task-image-wrap">
+            <img src="image13.png" alt="Рис. 431" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+431';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 5 -->
+    <div class="task-card" id="task-5">
+      <div class="task-header"><span class="task-badge">Задача 5</span></div>
+      <div class="task-text">А6. Однородный деревянный $\left(\rho = 600\text{ }\frac{\text{кг}}{\text{м}^3}\right)$ брусок объемом $V = 5,0\text{ дм}^3$ тянут по горизонтальному полу с помощью горизонтальной невесомой пружины с ускорением, модуль которого $a = 1,0\text{ }\frac{\text{м}}{\text{с}^2}$. Коэффициент трения между бруском и полом $\mu = 0,30$. Если жесткость пружины $k = 100\text{ }\frac{\text{Н}}{\text{м}}$, то ее удлинение $\Delta l$ равно:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(5, 1, this)">1) 30 мм;</button>
+        <button class="btn-option" onclick="handleChoice(5, 2, this)">2) 60 мм;</button>
+        <button class="btn-option" onclick="handleChoice(5, 3, this)">3) 90 мм;</button>
+        <button class="btn-option" onclick="handleChoice(5, 4, this)">4) 10 см;</button>
+        <button class="btn-option" onclick="handleChoice(5, 5, this)">5) 12 см.</button>
+      </div>
+      <div class="feedback-msg" id="fb-5"></div>
+      <button class="btn-solution-toggle" id="btn-sol-5" onclick="toggleSolution(5)">Показать Решение</button>
+      <div class="solution-box" id="sol-5">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А6. Из второго закона Ньютона следует: $F_{\text{упр}} - F_{\text{тр}} = ma$ и $N - mg = 0$. Масса бруска $m = \rho V$. Модуль силы трения $F_{\text{тр}} = \mu N$. По закону Гука $F_{\text{упр}} = k\Delta l$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$\Delta l = \frac{\rho V(\mu g + a)}{k} = 12\text{ см}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 6 -->
+    <div class="task-card" id="task-6">
+      <div class="task-header"><span class="task-badge">Задача 6</span></div>
+      <div class="task-text">А7. К легкой пружине жесткостью $k = 40\text{ }\frac{\text{Н}}{\text{м}}$ подвешен груз массой $m = 400\text{ г}$. Если длина растянутой пружины при этом $l = 30\text{ см}$, то длина $l_0$ недеформированной пружины равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(6, 1, this)">1) 10 см;</button>
+        <button class="btn-option" onclick="handleChoice(6, 2, this)">2) 15 см;</button>
+        <button class="btn-option" onclick="handleChoice(6, 3, this)">3) 18 см;</button>
+        <button class="btn-option" onclick="handleChoice(6, 4, this)">4) 20 см;</button>
+        <button class="btn-option" onclick="handleChoice(6, 5, this)">5) 22 см.</button>
+      </div>
+      <div class="feedback-msg" id="fb-6"></div>
+      <button class="btn-solution-toggle" id="btn-sol-6" onclick="toggleSolution(6)">Показать Решение</button>
+      <div class="solution-box" id="sol-6">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А7. Из второго закона Ньютона и закона Гука следует: $mg = k(l - l_0)$. Отсюда $l_0 = 20\text{ см}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 7 -->
+    <div class="task-card" id="task-7">
+      <div class="task-header"><span class="task-badge">Задача 7</span></div>
+      <div class="task-text">А8. Длина пружины динамометра, к которому подвешен один грузик, $l_1 = 61\text{ мм}$. К динамометру подвесили дополнительно еще два таких же грузика. Если длина пружины после этого стала $l_2 = 99\text{ мм}$, то длина $l_0$ недеформированной пружины динамометра равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(7, 1, this)">1) 33 мм;</button>
+        <button class="btn-option" onclick="handleChoice(7, 2, this)">2) 38 мм;</button>
+        <button class="btn-option" onclick="handleChoice(7, 3, this)">3) 40 мм;</button>
+        <button class="btn-option" onclick="handleChoice(7, 4, this)">4) 42 мм;</button>
+        <button class="btn-option" onclick="handleChoice(7, 5, this)">5) 50 мм.</button>
+      </div>
+      <div class="feedback-msg" id="fb-7"></div>
+      <button class="btn-solution-toggle" id="btn-sol-7" onclick="toggleSolution(7)">Показать Решение</button>
+      <div class="solution-box" id="sol-7">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А8. Используя второй закон Ньютона и закон Гука, запишем два уравнения: $k(l_1 - l_0) = P$ и $k(l_2 - l_0) = 3P$, где $k$ — жесткость пружины, $P$ — модуль веса одного грузика. Из записанных уравнений найдем ответ: $l_0 = 42\text{ мм}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 8 -->
+    <div class="task-card" id="task-8">
+      <div class="task-header"><span class="task-badge">Задача 8</span></div>
+      <div class="task-text">А9. К упругой легкой пружине поочередно подвешивали грузы массами $m_1 = 390\text{ г}$ и $m_2 = 270\text{ г}$. Если длина пружины при этом была $l_1 = 64\text{ см}$ и $l_2 = 56\text{ см}$ соответственно, то жесткость $k$ пружины равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(8, 1, this)">1) $12\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(8, 2, this)">2) $15\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(8, 3, this)">3) $34\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(8, 4, this)">4) $49\text{ }\frac{\text{Н}}{\text{м}}$;</button>
+        <button class="btn-option" onclick="handleChoice(8, 5, this)">5) $66\text{ }\frac{\text{Н}}{\text{м}}$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-8"></div>
+      <button class="btn-solution-toggle" id="btn-sol-8" onclick="toggleSolution(8)">Показать Решение</button>
+      <div class="solution-box" id="sol-8">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А9. Используя второй закон Ньютона и закон Гука, запишем два уравнения: $k(l_1 - l_0) = m_1 g$ и $k(l_2 - l_0) = m_2 g$, где $l_0$ — длина недеформированной пружины. Из записанных уравнений найдем ответ: $k = 15\text{ }\frac{\text{Н}}{\text{м}}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 9 -->
+    <div class="task-card" id="task-9">
+      <div class="task-header"><span class="task-badge">Задача 9</span></div>
+      <div class="task-text">А13. Динамометр с прикрепленным к нему грузом сначала поднимали вертикально вверх с ускорением, модуль которого $a = 0,60\text{ }\frac{\text{м}}{\text{с}^2}$, а затем опускали с ускорением, модуль которого $a_2 = a$. Если разность показаний динамометра $|\Delta F| = 30\text{ Н}$, то масса $m$ груза равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(9, 1, this)">1) 10 кг;</button>
+        <button class="btn-option" onclick="handleChoice(9, 2, this)">2) 15 кг;</button>
+        <button class="btn-option" onclick="handleChoice(9, 3, this)">3) 20 кг;</button>
+        <button class="btn-option" onclick="handleChoice(9, 4, this)">4) 25 кг;</button>
+        <button class="btn-option" onclick="handleChoice(9, 5, this)">5) 30 кг.</button>
+      </div>
+      <div class="feedback-msg" id="fb-9"></div>
+      <button class="btn-solution-toggle" id="btn-sol-9" onclick="toggleSolution(9)">Показать Решение</button>
+      <div class="solution-box" id="sol-9">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А13. Из второго закона Ньютона и закона Гука следует: $F_1 - mg = ma$ и $mg - F_2 = ma$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$m = \frac{|\Delta F|}{2a} = 25\text{ кг}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 10 -->
+    <div class="task-card" id="task-10">
+      <div class="task-header"><span class="task-badge">Задача 10</span></div>
+      <div class="task-text">А15. Груз, подвешенный на легкой пружине, поднимают вверх, один раз — равномерно, другой — с ускорением, модуль которого $a = 2,0\text{ }\frac{\text{м}}{\text{с}^2}$. Если в первом случае длина пружины $l_1 = 42\text{ см}$, а во втором — $l_2 = 45\text{ см}$, то длина $l_0$ недеформированной пружины равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(10, 1, this)">1) 27 см;</button>
+        <button class="btn-option" onclick="handleChoice(10, 2, this)">2) 30 см;</button>
+        <button class="btn-option" onclick="handleChoice(10, 3, this)">3) 32 см;</button>
+        <button class="btn-option" onclick="handleChoice(10, 4, this)">4) 35 см;</button>
+        <button class="btn-option" onclick="handleChoice(10, 5, this)">5) 38 см.</button>
+      </div>
+      <div class="feedback-msg" id="fb-10"></div>
+      <button class="btn-solution-toggle" id="btn-sol-10" onclick="toggleSolution(10)">Показать Решение</button>
+      <div class="solution-box" id="sol-10">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А15. В первом случае $k(l_1 - l_0) = mg$, во втором случае $k(l_2 - l_0) - mg = ma$. Из записанных уравнений следует ответ: $l_0 = 27\text{ см}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 11 -->
+    <div class="task-card" id="task-11">
+      <div class="task-header"><span class="task-badge">Задача 11</span></div>
+      <div class="task-text">А16. К потолку равноускоренно движущейся кабины лифта на упругом легком шнуре жесткостью $k_1 = 96\text{ }\frac{\text{Н}}{\text{м}}$ подвешен груз массой $m_1 = 1,0\text{ кг}$. Снизу к грузу прикреплена невесомая пружина жесткостью $k_2 = 80\text{ }\frac{\text{Н}}{\text{м}}$, на которой подвешена гиря массой $m_2 = 2,0\text{ кг}$. Если удлинение пружины $\Delta l_2 = 20\text{ см}$, то удлинение $\Delta l_1$ шнура равно:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(11, 1, this)">1) 10 см;</button>
+        <button class="btn-option" onclick="handleChoice(11, 2, this)">2) 16 см;</button>
+        <button class="btn-option" onclick="handleChoice(11, 3, this)">3) 21 см;</button>
+        <button class="btn-option" onclick="handleChoice(11, 4, this)">4) 25 см;</button>
+        <button class="btn-option" onclick="handleChoice(11, 5, this)">5) 28 см.</button>
+      </div>
+      <div class="feedback-msg" id="fb-11"></div>
+      <button class="btn-solution-toggle" id="btn-sol-11" onclick="toggleSolution(11)">Показать Решение</button>
+      <div class="solution-box" id="sol-11">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А16. На рисунке 432 показаны силы, действующие на груз и гирю. Направление ускорения неизвестно. По второму закону Ньютона в проекциях на ось $Ox$ запишем два уравнения: $m_1 g - F_1 + F_2' = m_1 a_x$ и $m_2 g - F_2 = m_2 a_x$, где $F_1 = k_1 \Delta l_1$, $F_2 = F_2'$. Выясним направление ускорения кабины лифта, а значит, гири и груза. По закону Гука $F_2 = k_2 \Delta l_2 = 16\text{ Н}$. Модуль силы тяжести, действующей на гирю, $m_2 g = 20\text{ Н}$. Так как $F_2 < m_2 g$, то ускорение направлено вниз. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$\Delta l_1 = \frac{k_2 \Delta l_2(m_1 + m_2)}{k_1 m_2} = 25\text{ см}.$$</div>
+          <div class="task-image-wrap">
+            <img src="image14.png" alt="Рис. 432" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+432';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 12 -->
+    <div class="task-card" id="task-12">
+      <div class="task-header"><span class="task-badge">Задача 12</span></div>
+      <div class="task-text">А19. На рисунке 62 показан график зависимости модуля перемещения $\Delta r$ от времени $t$ движения тела, которое поднимают вверх на упругом легком жгуте жесткостью $k = 63\text{ }\frac{\text{Н}}{\text{м}}$. Если удлинение жгута $\Delta l = 12\text{ см}$, то масса $m$ тела равна:</div>
+      <div class="task-image-wrap">
+        <img src="image3.png" alt="Рис. 62" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+62';">
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(12, 1, this)">1) 0,18 кг;</button>
+        <button class="btn-option" onclick="handleChoice(12, 2, this)">2) 0,21 кг;</button>
+        <button class="btn-option" onclick="handleChoice(12, 3, this)">3) 0,36 кг;</button>
+        <button class="btn-option" onclick="handleChoice(12, 4, this)">4) 0,40 кг;</button>
+        <button class="btn-option" onclick="handleChoice(12, 5, this)">5) 0,54 кг.</button>
+      </div>
+      <div class="feedback-msg" id="fb-12"></div>
+      <button class="btn-solution-toggle" id="btn-sol-12" onclick="toggleSolution(12)">Показать Решение</button>
+      <div class="solution-box" id="sol-12">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А19. Используя график (рис. 62), запишем два уравнения: $\Delta r_1 = \upsilon_0 t_1 + \frac{at_1^2}{2}$ и $\Delta r_2 = \upsilon_0 t_2 + \frac{at_2^2}{2}$, где $\Delta r_1 = 8\text{ м}$, $t_1 = 2\text{ с}$, $\Delta r_2 = 18\text{ м}$ и $t_2 = 3\text{ с}$. Отсюда модуль ускорения тела $a = 4\text{ }\frac{\text{м}}{\text{с}^2}$. Из второго закона Ньютона и закона Гука следует: $k\Delta l - mg = ma$. Отсюда $m = 0,54\text{ кг}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 13 -->
+    <div class="task-card" id="task-13">
+      <div class="task-header"><span class="task-badge">Задача 13</span></div>
+      <div class="task-text">В1. Брусок массой $m = 800\text{ г}$, прикрепленный к легкому жгуту жесткостью $k = 32\text{ }\frac{\text{Н}}{\text{м}}$, равноускоренно перемещают вдоль оси $Ox$ по горизонтальной поверхности под действием горизонтально направленной силы, приложенной к свободному концу жгута. Коэффициент трения между бруском и поверхностью $\mu = 0,40$. Если в момент времени $t_1 = 0,50\text{ с}$, считая от начала движения бруска, его координата была $x_1 = 40\text{ см}$, а в момент времени $t_2 = 1,0\text{ с}$ координата бруска стала $x_2 = 70\text{ см}$, то удлинение $\Delta l$ жгута было равно ... см.</div>
+      <div class="calc-row">
+        <label>Введите удлинение жгута в сантиметрах ($\text{см}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-13">
+          <button class="btn-check" onclick="validateCalculation(13)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-13"></div>
+      <button class="btn-solution-toggle" id="btn-sol-13" onclick="toggleSolution(13)">Показать Решение</button>
+      <div class="solution-box" id="sol-13">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В1. На рисунке 433 показаны силы, действующие на брусок. Запишем второй закон Ньютона: $m\vec{g} + \vec{N} + \vec{F}_{\text{упр}} + \vec{F}_{\text{тр}} = m\vec{a}$. В проекциях на координатные оси $Ox$ и $Oy$ получим: $F_{\text{упр}} - F_{\text{тр}} = ma$ и $N - mg = 0$. Модуль силы трения $F_{\text{тр}} = \mu N$. По закону Гука $F_{\text{упр}} = k\Delta l$. Используя кинематический закон движения, запишем два уравнения: $x_1 = x_0 + \frac{a_x t_1^2}{2}$ и $x_2 = x_0 + \frac{a_x t_2^2}{2}$, где $x_0$ — начальная координата бруска. Подставив данные задачи, найдем модуль ускорения бруска: $a = 0,80\text{ }\frac{\text{м}}{\text{с}^2}$. Из записанных уравнений найдем ответ: $\Delta l = 12\text{ см}$.
+          <div class="task-image-wrap">
+            <img src="image15.png" alt="Рис. 433" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+433';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 14 -->
+    <div class="task-card" id="task-14">
+      <div class="task-header"><span class="task-badge">Задача 14</span></div>
+      <div class="task-text">В2. К ящику массой $m = 64\text{ кг}$, находящемуся на гладкой горизонтальной поверхности, прикреплен резиновый жгут длиной $l_0 = 1,2\text{ м}$ и жесткостью $k = 400\text{ }\frac{\text{Н}}{\text{м}}$. К свободному концу жгута приложили горизонтальную силу, и ящик начал двигаться. При этом длина жгута стала $l = 1,6\text{ м}$. Если путь, пройденный ящиком из состояния покоя, $s = 7,2\text{ м}$, то средняя скорость $\langle\upsilon\rangle$ движения ящика на этом пути равна ... $\frac{\text{дм}}{\text{с}}$.</div>
+      <div class="calc-row">
+        <label>Введите среднюю скорость движения ящика в $\frac{\text{дм}}{\text{с}}$:</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-14">
+          <button class="btn-check" onclick="validateCalculation(14)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-14"></div>
+      <button class="btn-solution-toggle" id="btn-sol-14" onclick="toggleSolution(14)">Показать Решение</button>
+      <div class="solution-box" id="sol-14">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В2. Из второго закона Ньютона и закона Гука следует: $k(l - l_0) = ma$, где $a$ — модуль ускорения ящика. Время разгона найдем из формулы $s = \frac{at^2}{2}$. Средняя скорость пути $\langle\upsilon\rangle = \frac{s}{t}$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$\langle\upsilon\rangle = \sqrt{\frac{sk(l - l_0)}{2m}} = 30\text{ }\frac{\text{дм}}{\text{с}}$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 15 -->
+    <div class="task-card" id="task-15">
+      <div class="task-header"><span class="task-badge">Задача 15</span></div>
+      <div class="task-text">В3. Легкая пружина соединяет два кубика массами $m_1 = 0,50\text{ кг}$ и $m_2 = 0,80\text{ кг}$. Когда система подвешена за верхний кубик массой $m_1$, то длина пружины $l_1 = 55\text{ см}$, а когда система поставлена на нижний кубик массой $m_2$ — длина пружины $l_2 = 22,5\text{ см}$. Жесткость $k$ пружины равна ... $\frac{\text{Н}}{\text{м}}$.</div>
+      <div class="calc-row">
+        <label>Введите жесткость пружины в $\frac{\text{Н}}{\text{м}}$:</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-15">
+          <button class="btn-check" onclick="validateCalculation(15)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-15"></div>
+      <button class="btn-solution-toggle" id="btn-sol-15" onclick="toggleSolution(15)">Показать Решение</button>
+      <div class="solution-box" id="sol-15">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В3. Рассмотрим первый случай. По второму закону Ньютона и закону Гука $k(l_1 - l_0) = m_1 g$. Рассмотрим второй случай. По второму закону Ньютона и закону Гука $k(l_0 - l_2) = m_2 g$. Из записанных уравнений следует: $k = 40\text{ }\frac{\text{Н}}{\text{м}}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 16 -->
+    <div class="task-card" id="task-16">
+      <div class="task-header"><span class="task-badge">Задача 16</span></div>
+      <div class="task-text">В4. Если к нижнему концу вертикально висящей легкой пружины прикрепить груз, то ее длина станет $l_1 = 50\text{ см}$. Если другой такой же груз, не снимая первого, прикрепить к середине пружины, то ее длина возрастет до $l_2 = 64\text{ см}$. Длина пружины $l_0$ в недеформированном состоянии равна ... см.</div>
+      <div class="calc-row">
+        <label>Введите длину пружины в недеформированном состоянии в сантиметрах ($\text{см}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-16">
+          <button class="btn-check" onclick="validateCalculation(16)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-16"></div>
+      <button class="btn-solution-toggle" id="btn-sol-16" onclick="toggleSolution(16)">Показать Решение</button>
+      <div class="solution-box" id="sol-16">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В4. Из второго закона Ньютона и закона Гука следует: $k(l_1 - l_0) = mg$. Когда подвесили второй груз, справедливым стало уравнение $2k(l_2 - l_1) = mg$. Из записанных уравнений найдем ответ: $l_0 = 3l_1 - 2l_2 = 22\text{ см}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 17 -->
+    <div class="task-card" id="task-17">
+      <div class="task-header"><span class="task-badge">Задача 17</span></div>
+      <div class="task-text">В6. Тело массой $m = 2,0\text{ кг}$ тянут по гладкой горизонтальной поверхности вдоль оси $Ox$ с помощью легкой пружины, составляющей угол $\alpha = 30^\circ$ с вертикалью. На рисунке 64 представлен график зависимости проекции скорости $\upsilon_x$ движения тела от времени $t$. Если жесткость пружины $k = 25\text{ }\frac{\text{Н}}{\text{м}}$, то ее удлинение $\Delta l$ равно ... мм.</div>
+      <div class="task-image-wrap">
+        <img src="image4.png" alt="Рис. 64" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+64';">
+      </div>
+      <div class="calc-row">
+        <label>Введите удлинение пружины в миллиметрах ($\text{мм}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-17">
+          <button class="btn-check" onclick="validateCalculation(17)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-17"></div>
+      <button class="btn-solution-toggle" id="btn-sol-17" onclick="toggleSolution(17)">Показать Решение</button>
+      <div class="solution-box" id="sol-17">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В6. В соответствии с графиком (рис. 64) проекция ускорения тела $a_x = \frac{\upsilon_x - \upsilon_{0x}}{\Delta t} = 0,6\text{ }\frac{\text{м}}{\text{с}^2}$, где $\upsilon_x = 3,2\text{ }\frac{\text{м}}{\text{с}}$, $\upsilon_{0x} = 0,8\text{ }\frac{\text{м}}{\text{с}}$ и $\Delta t = 4,0\text{ с}$. На рисунке 434 показаны силы, действующие на тело. Из второго закона Ньютона и закона Гука следует: $k\Delta l \cos\left(\frac{\pi}{2} - \alpha\right) = ma$, где $a = a_x$. Отсюда $\Delta l = 96\text{ мм}$.
+          <div class="task-image-wrap">
+            <img src="image16.png" alt="Рис. 434" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+434';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 18 -->
+    <div class="task-card" id="task-18">
+      <div class="task-header"><span class="task-badge">Задача 18</span></div>
+      <div class="task-text">В7. На горизонтальной плоскости находится брусок, который тянут с помощью легкой пружины, расположенной под углом $\alpha$ ($\cos\alpha = 0,80$) (рис. 65). Масса бруска $m = 0,69\text{ кг}$. Коэффициент трения между бруском и плоскостью $\mu = 0,20$. Через промежуток времени $\Delta t = 0,60\text{ с}$ брусок из состояния покоя прошел путь $s = 36\text{ см}$. Если абсолютное удлинение пружины $\Delta l = 15\text{ см}$, то жесткость $k$ пружины равна ... $\frac{\text{Н}}{\text{м}}$.</div>
+      <div class="task-image-wrap">
+        <img src="image5.png" alt="Рис. 65" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+65';">
+      </div>
+      <div class="calc-row">
+        <label>Введите жесткость пружины в $\frac{\text{Н}}{\text{м}}$:</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-18">
+          <button class="btn-check" onclick="validateCalculation(18)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-18"></div>
+      <button class="btn-solution-toggle" id="btn-sol-18" onclick="toggleSolution(18)">Показать Решение</button>
+      <div class="solution-box" id="sol-18">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В7. На рисунке 435 показаны силы, действующие на брусок. Запишем второй закон Ньютона: $m\vec{g} + \vec{N} + \vec{F}_{\text{упр}} + \vec{F}_{\text{тр}} = m\vec{a}$. В проекциях на координатные оси $Ox$ и $Oy$ получим: $F_{\text{упр}}\cos\alpha - F_{\text{тр}} = ma$ и $N + F_{\text{упр}}\sin\alpha - mg = 0$, где $\sin\alpha = \sqrt{1 - \cos^2\alpha} = 0,6$. Модуль силы трения $F_{\text{тр}} = \mu N$. По закону Гука $F_{\text{упр}} = k\Delta l$. Модуль ускорения бруска найдем из формулы $s = \frac{a\Delta t^2}{2}$. Из записанных уравнений найдем ответ: $k = 20\text{ }\frac{\text{Н}}{\text{м}}$.
+          <div class="task-image-wrap">
+            <img src="image17.png" alt="Рис. 435" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+435';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 19 -->
+    <div class="task-card" id="task-19">
+      <div class="task-header"><span class="task-badge">Задача 19</span></div>
+      <div class="task-text">В8. Два бруска массами $m_1 = 0,20\text{ кг}$ и $m_2 = 0,30\text{ кг}$, соединенные легкой пружиной жесткостью $k = 25\text{ }\frac{\text{Н}}{\text{м}}$, находятся на горизонтальной гладкой поверхности (рис. 66). На брусок массой $m_2$ действует постоянная горизонтальная сила, модуль которой $F = 10\text{ Н}$. Величина сжатия $|\Delta l|$ пружины при движении брусков равна ... см.</div>
+      <div class="task-image-wrap">
+        <img src="image6.png" alt="Рис. 66" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+66';">
+      </div>
+      <div class="calc-row">
+        <label>Введите величину сжатия пружины в сантиметрах ($\text{см}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-19">
+          <button class="btn-check" onclick="validateCalculation(19)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-19"></div>
+      <button class="btn-solution-toggle" id="btn-sol-19" onclick="toggleSolution(19)">Показать Решение</button>
+      <div class="solution-box" id="sol-19">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В8. По второму закону Ньютона $F = (m_1 + m_2)a$. Из второго закона Ньютона и закона Гука следует: $k|\Delta l| = m_1 a$. Отсюда
+          <div class="math-scroll">$$|\Delta l| = \frac{m_1 F}{k(m_1 + m_2)} = 16\text{ см}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 20 -->
+    <div class="task-card" id="task-20">
+      <div class="task-header"><span class="task-badge">Задача 20</span></div>
+      <div class="task-text">В10. Два бруска массами $m_1 = 0,40\text{ кг}$ и $m_2 = 0,60\text{ кг}$, соединенные легкой пружиной жесткостью $k = 10\text{ }\frac{\text{Н}}{\text{м}}$, движутся под действием горизонтальной силы, модуль которой $F = 6,0\text{ Н}$, по горизонтальной поверхности (рис. 68). Если на первый и второй брусок действует сила трения, модуль которой соответственно $F_{\text{тр1}} = 1,6\text{ Н}$ и $F_{\text{тр2}} = 2,4\text{ Н}$, то удлинение пружины $\Delta l$ равно ... см.</div>
+      <div class="task-image-wrap">
+        <img src="image7.png" alt="Рис. 68" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+68';">
+      </div>
+      <div class="calc-row">
+        <label>Введите удлинение пружины в сантиметрах ($\text{см}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-20">
+          <button class="btn-check" onclick="validateCalculation(20)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-20"></div>
+      <button class="btn-solution-toggle" id="btn-sol-20" onclick="toggleSolution(20)">Показать Решение</button>
+      <div class="solution-box" id="sol-20">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В10. На рисунке 436 показаны силы, действующие на бруски. По второму закону Ньютона в проекциях на координатную ось $Ox$ получим: $F_1 - F_{\text{тр1}} = m_1 a$ и $F - F_2 - F_{\text{тр2}} = m_2 a$. По закону Гука $F_1 = F_2 = k\Delta l$. Из записанных уравнений найдем ответ: $\Delta l = 24\text{ см}$.
+          <div class="task-image-wrap">
+            <img src="image18.png" alt="Рис. 436" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+436';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 21 -->
+    <div class="task-card" id="task-21">
+      <div class="task-header"><span class="task-badge">Задача 21</span></div>
+      <div class="task-text">В11. Брусок массой $m_1 = 1,0\text{ кг}$, находящийся на горизонтальной поверхности стола (рис. 69), связан легкой пружиной и невесомой нерастяжимой нитью, перекинутой через легкий блок, с грузом массой $m_2 = 0,50\text{ кг}$. При движении на брусок действует сила трения, модуль которой $F_{\text{тр}} = 2,0\text{ Н}$. Если удлинение пружины $\Delta l = 50\text{ мм}$, то ее жесткость $k$ равна ... $\frac{\text{Н}}{\text{м}}$.</div>
+      <div class="task-image-wrap">
+        <img src="image8.png" alt="Рис. 69" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+69';">
+      </div>
+      <div class="calc-row">
+        <label>Введите жесткость пружины в $\frac{\text{Н}}{\text{м}}$:</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-21">
+          <button class="btn-check" onclick="validateCalculation(21)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-21"></div>
+      <button class="btn-solution-toggle" id="btn-sol-21" onclick="toggleSolution(21)">Показать Решение</button>
+      <div class="solution-box" id="sol-21">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В11. На рисунке 437 показаны силы, действующие на брусок и груз. По второму закону Ньютона в проекциях на координатные оси получим: $F_1 - F_{\text{тр}} = m_1 a_1$ и $m_2 g - F_2 = m_2 a_2$. По закону Гука $F_1 = F_2 = k\Delta l$. Учитывая, что $a_1 = a_2$, из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$k = \frac{m_1 m_2 g + m_2 F_{\text{тр}}}{\Delta l(m_1 + m_2)} = 80\text{ }\frac{\text{Н}}{\text{м}}.$$</div>
+          <div class="task-image-wrap">
+            <img src="image19.png" alt="Рис. 437" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+437';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 22 -->
+    <div class="task-card" id="task-22">
+      <div class="task-header"><span class="task-badge">Задача 22</span></div>
+      <div class="task-text">В12. Вниз по наклонной плоскости, образующей угол $\alpha = 30^\circ$ с горизонтом, равноускоренно скользит брусок массой $m = 200\text{ г}$, к которому прикреплена легкая пружина жесткостью $k = 2,0\text{ }\frac{\text{Н}}{\text{м}}$ (рис. 70). Если при движении на брусок действует сила трения скольжения, модуль которой $F_{\text{тр}} = 0,12\text{ Н}$, а удлинение пружины, расположенной параллельно наклонной плоскости, $\Delta l = 40\text{ мм}$, то модуль ускорения $a$ бруска равен ... $\frac{\text{м}}{\text{с}^2}$.</div>
+      <div class="task-image-wrap">
+        <img src="image9.png" alt="Рис. 70" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+70';">
+      </div>
+      <div class="calc-row">
+        <label>Введите модуль ускорения бруска в $\frac{\text{м}}{\text{с}^2}$:</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-22">
+          <button class="btn-check" onclick="validateCalculation(22)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-22"></div>
+      <button class="btn-solution-toggle" id="btn-sol-22" onclick="toggleSolution(22)">Показать Решение</button>
+      <div class="solution-box" id="sol-22">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В12. На рисунке 438 показаны силы, действующие на брусок. По второму закону Ньютона $m\vec{g} + \vec{N} + \vec{F}_{\text{упр}} + \vec{F}_{\text{тр}} = m\vec{a}$. В проекции на ось $Ox$ получим: $mg\sin\alpha - F_{\text{упр}} - F_{\text{тр}} = ma$. По закону Гука $F_{\text{упр}} = k\Delta l$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$a = \frac{mg\sin\alpha - F_{\text{упр}} - F_{\text{тр}}}{m} = 4\text{ }\frac{\text{м}}{\text{с}^2}.$$</div>
+          <div class="task-image-wrap">
+            <img src="image20.png" alt="Рис. 438" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+438';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 23 -->
+    <div class="task-card" id="task-23">
+      <div class="task-header"><span class="task-badge">Задача 23</span></div>
+      <div class="task-text">В14. Через легкий блок перекинута невесомая нерастяжимая нить, к одному концу которой подвешен груз массой $m_1 = 100\text{ г}$, а к другому прикреплена невесомая пружина (рис. 71). Снизу к пружине подвешен груз массой $m_2 = 300\text{ г}$. При движении грузов длина пружины $l = 24\text{ см}$. Если под действием силы, модуль которой $F = 2,0\text{ Н}$, пружина удлиняется на $\Delta l = 40\text{ мм}$, то длина $l_0$ недеформированной пружины равна ... см.</div>
+      <div class="task-image-wrap">
+        <img src="image10.png" alt="Рис. 71" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+71';">
+      </div>
+      <div class="calc-row">
+        <label>Введите длину недеформированной пружины в сантиметрах ($\text{см}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-23">
+          <button class="btn-check" onclick="validateCalculation(23)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-23"></div>
+      <button class="btn-solution-toggle" id="btn-sol-23" onclick="toggleSolution(23)">Показать Решение</button>
+      <div class="solution-box" id="sol-23">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В14. На рисунке 440 показаны силы, действующие на каждый груз. По второму закону Ньютона $m_1\vec{g} + \vec{F}_{\text{упр}} = m_1\vec{a}_1$ и $m_2\vec{g} + \vec{F}_{\text{упр}} = m_2\vec{a}_2$. В проекции на ось $Ox$ получим: $m_1 g - F_{\text{упр}} = -m_1 a_1$ и $m_2 g - F_{\text{упр}} = m_2 a_2$. По закону Гука $F_{\text{упр}} = k(l - l_0)$. Определим жесткость пружины: $k = \frac{F}{\Delta l} = 50\text{ }\frac{\text{Н}}{\text{м}}$. Учитывая, что $a_1 = a_2$, из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$l_0 = l - \frac{2m_1 m_2 g}{k(m_2 + m_1)} = 21\text{ см}.$$</div>
+          <div class="task-image-wrap">
+            <img src="image21.png" alt="Рис. 440" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+440';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 24 -->
+    <div class="task-card" id="task-24">
+      <div class="task-header"><span class="task-badge">Задача 24</span></div>
+      <div class="task-text">В15. Два груза массами $m_1 = 0,30\text{ кг}$ и $m_2 = 0,60\text{ кг}$ соединены невесомой нерастяжимой нитью, перекинутой через легкий блок, подвешенный на пружине (рис. 72). Если жесткость пружины $k = 32\text{ }\frac{\text{Н}}{\text{м}}$, то при движении грузов удлинение пружины $\Delta l$ равно ... см.</div>
+      <div class="task-image-wrap">
+        <img src="image11.png" alt="Рис. 72" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+72';">
+      </div>
+      <div class="calc-row">
+        <label>Введите удлинение пружины в сантиметрах ($\text{см}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-24">
+          <button class="btn-check" onclick="validateCalculation(24)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-24"></div>
+      <button class="btn-solution-toggle" id="btn-sol-24" onclick="toggleSolution(24)">Показать Решение</button>
+      <div class="solution-box" id="sol-24">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В15. На рисунке 441 показаны силы, действующие на каждый груз. По второму закону Ньютона $m_1\vec{g} + \vec{F}_1 = m_1\vec{a}_1$ и $m_2\vec{g} + \vec{F}_2 = m_2\vec{a}_2$. В проекции на ось $Ox$ получим: $m_1 g - F_1 = -m_1 a_1$ и $m_2 g - F_2 = m_2 a_2$. Учитывая, что $a_1 = a_2$ и $F_1 = F_2$, найдем модуль силы натяжения нити: $F_1 = \frac{2m_1 m_2 g}{m_1 + m_2} = 4\text{ Н}$. По третьему закону Ньютона $F_1 = F_1'$ и $F_2 = F_2'$. По второму закону Ньютона $F = F_1' + F_2'$. По закону Гука $F = k\Delta l$. Из записанных уравнений найдем ответ: $\Delta l = 25\text{ см}$.
+          <div class="task-image-wrap">
+            <img src="image22.png" alt="Рис. 441" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+441';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 25 -->
+    <div class="task-card" id="task-25">
+      <div class="task-header"><span class="task-badge">Задача 25</span></div>
+      <div class="task-text">В16. Брусок массой $m_1 = 0,50\text{ кг}$, находящийся на горизонтальной поверхности, связан легкой нерастяжимой нитью, перекинутой через легкий блок, вращающийся без трения, и легкой пружиной с грузом массой $m_2 = 0,40\text{ кг}$ (рис. 73). Коэффициент трения скольжения между бруском и поверхностью $\mu = 0,35$. Поверхность перемещают вертикально вверх с ускорением, модуль которого $a = 2,0\text{ }\frac{\text{м}}{\text{с}^2}$. Если жесткость пружины $k = 36\text{ }\frac{\text{Н}}{\text{м}}$, то абсолютное удлинение пружины $\Delta l$ равно ... см.</div>
+      <div class="task-image-wrap">
+        <img src="image12.png" alt="Рис. 73" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+73';">
+      </div>
+      <div class="calc-row">
+        <label>Введите абсолютное удлинение пружины в сантиметрах ($\text{см}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-25">
+          <button class="btn-check" onclick="validateCalculation(25)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-25"></div>
+      <button class="btn-solution-toggle" id="btn-sol-25" onclick="toggleSolution(25)">Показать Решение</button>
+      <div class="solution-box" id="sol-25">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В16. Рассмотрим решение задачи относительно земли. На рисунке 442 показаны силы, действующие на брусок и груз. Из второго закона Ньютона следует: $F_1 - F_{\text{тр}} = m_1 a_1$, $N - m_1 g = m_1 a$, $m_2 g - F_2 = m_2 a_2 - m_2 a$. Модуль силы трения $F_{\text{тр}} = \mu N$, модуль ускорения $a_1 = a_2$, модуль силы $F_1 = F_2$. По закону Гука $F_1 = F_2 = k\Delta l$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$\Delta l = \frac{m_1 m_2(g + a)(1 + \mu)}{(m_1 + m_2)k} = 10\text{ см}.$$</div>
+          <div class="task-image-wrap">
+            <img src="image23.png" alt="Рис. 442" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+442';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 26 -->
+    <div class="task-card" id="task-26">
+      <div class="task-header"><span class="task-badge">Задача 26</span></div>
+      <div class="task-text">А16. Два однородных шара радиусами $R_1 = 15\text{ см}$ и $R_2 = 25\text{ см}$ соприкасаются друг с другом. Если один из шаров отодвинуть от другого, сместив его на расстояние $l = 1,2\text{ м}$, то модуль силы тяготения между шарами уменьшится в:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(26, 1, this)">1) 2 раза;</button>
+        <button class="btn-option" onclick="handleChoice(26, 2, this)">2) 3 раза;</button>
+        <button class="btn-option" onclick="handleChoice(26, 3, this)">3) 4 раза;</button>
+        <button class="btn-option" onclick="handleChoice(26, 4, this)">4) 9 раз;</button>
+        <button class="btn-option" onclick="handleChoice(26, 5, this)">5) 16 раз.</button>
+      </div>
+      <div class="feedback-msg" id="fb-26"></div>
+      <button class="btn-solution-toggle" id="btn-sol-26" onclick="toggleSolution(26)">Показать Решение</button>
+      <div class="solution-box" id="sol-26">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А16. Запишем закон всемирного тяготения для двух положений шаров: $F_1 = G\frac{m_1 m_2}{(R_1 + R_2)^2}$ и $F_2 = G\frac{m_1 m_2}{(R_1 + R_2 + l)^2}$. Из записанных уравнений найдем ответ: $\frac{F_1}{F_2} = 16$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 27 -->
+    <div class="task-card" id="task-27">
+      <div class="task-header"><span class="task-badge">Задача 27</span></div>
+      <div class="task-text">А17. Масса Меркурия в восемнадцать раз меньше массы Земли, находится он в 2,5 раза ближе к Солнцу, чем Земля. Модуль силы притяжения Земли к Солнцу больше модуля силы притяжения Меркурия к Солнцу в:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(27, 1, this)">1) 2,25 раза;</button>
+        <button class="btn-option" onclick="handleChoice(27, 2, this)">2) 2,50 раза;</button>
+        <button class="btn-option" onclick="handleChoice(27, 3, this)">3) 2,88 раза;</button>
+        <button class="btn-option" onclick="handleChoice(27, 4, this)">4) 18 раз;</button>
+        <button class="btn-option" onclick="handleChoice(27, 5, this)">5) 45 раз.</button>
+      </div>
+      <div class="feedback-msg" id="fb-27"></div>
+      <button class="btn-solution-toggle" id="btn-sol-27" onclick="toggleSolution(27)">Показать Решение</button>
+      <div class="solution-box" id="sol-27">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А17. По закону всемирного тяготения модуль силы притяжения Меркурия к Солнцу $F_{\text{М}} = G\frac{m_{\text{М}} m_{\text{С}}}{r_{\text{М}}^2}$ и Земли к Солнцу $F_{\text{З}} = G\frac{m_{\text{З}} m_{\text{С}}}{r_{\text{З}}^2}$. Используя условие задачи, запишем соотношения между массами и расстояниями: $m_{\text{З}} = 18m_{\text{М}}$ и $r_{\text{З}} = 2,5r_{\text{М}}$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$\frac{F_{\text{З}}}{F_{\text{М}}} = 2,88.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 28 -->
+    <div class="task-card" id="task-28">
+      <div class="task-header"><span class="task-badge">Задача 28</span></div>
+      <div class="task-text">А18. Расстояние между центром Земли и центром Луны равно $60R_{\text{З}}$ ($R_{\text{З}}$ — радиус Земли). Масса Земли в $n = 81$ раз больше массы Луны. Тело, находящееся на линии, соединяющей центр Земли и центр Луны, притягивается к Земле и Луне с одинаковой силой, если оно находится на расстоянии $r$ от центра Луны, равном:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(28, 1, this)">1) $6R_{\text{З}}$;</button>
+        <button class="btn-option" onclick="handleChoice(28, 2, this)">2) $9R_{\text{З}}$;</button>
+        <button class="btn-option" onclick="handleChoice(28, 3, this)">3) $15R_{\text{З}}$;</button>
+        <button class="btn-option" onclick="handleChoice(28, 4, this)">4) $30R_{\text{З}}$;</button>
+        <button class="btn-option" onclick="handleChoice(28, 5, this)">5) $54R_{\text{З}}$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-28"></div>
+      <button class="btn-solution-toggle" id="btn-sol-28" onclick="toggleSolution(28)">Показать Решение</button>
+      <div class="solution-box" id="sol-28">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А18. Модуль силы притяжения тела к Земле $F_1 = G\frac{m_{\text{З}} m}{r_1^2}$. Модуль силы притяжения тела к Луне $F_2 = G\frac{m_{\text{Л}} m}{r^2}$. Так как модули сил притяжения тела к Земле и к Луне равны, то $\frac{m_{\text{З}}}{r_1^2} = \frac{m_{\text{Л}}}{r^2}$. Масса Земли $m_{\text{З}} = nm_{\text{Л}}$. Расстояние от тела до центра Земли $r_1 = 60R_{\text{З}} - r$. Из записанных уравнений получим $r = 6R_{\text{З}}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 29 -->
+    <div class="task-card" id="task-29">
+      <div class="task-header"><span class="task-badge">Задача 29</span></div>
+      <div class="task-text">А19. Расстояние между центрами двух однородных шаров массами $m_1 = 4\text{ кг}$ и $m_2 = 1\text{ кг}$ равно $r_1$. Модуль силы гравитационного взаимодействия между этими шарами равен $F_1$. Если модуль силы гравитационного взаимодействия между двумя однородными шарами массами $m_3 = 8\text{ кг}$ и $m_4 = 0,5\text{ кг}$ составляет $F_2 = 4F_1$, то расстояние $r_2$ между центрами этих шаров равно:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(29, 1, this)">1) $\frac{1}{4}r_1$;</button>
+        <button class="btn-option" onclick="handleChoice(29, 2, this)">2) $\frac{1}{2}r_1$;</button>
+        <button class="btn-option" onclick="handleChoice(29, 3, this)">3) $r_1$;</button>
+        <button class="btn-option" onclick="handleChoice(29, 4, this)">4) $2r_1$;</button>
+        <button class="btn-option" onclick="handleChoice(29, 5, this)">5) $4r_1$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-29"></div>
+      <button class="btn-solution-toggle" id="btn-sol-29" onclick="toggleSolution(29)">Показать Решение</button>
+      <div class="solution-box" id="sol-29">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А19. Запишем закон всемирного тяготения для двух пар шаров: $F_1 = G\frac{m_1 m_2}{r_1^2}$ и $F_2 = G\frac{m_3 m_4}{r_2^2}$. Так как $F_2 = 4F_1$, то $r_2 = \frac{r_1}{2}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 30 -->
+    <div class="task-card" id="task-30">
+      <div class="task-header"><span class="task-badge">Задача 30</span></div>
+      <div class="task-text">А20. На поверхности Земли на полезный груз, находящийся в ракете, действует сила тяготения, модуль которой $F_1 = 14,4\text{ кН}$. На этот же груз, когда ракета поднимется на высоту $h = 2R_{\text{З}}$ ($R_{\text{З}}$ — радиус Земли) от поверхности Земли, будет действовать сила тяготения, модуль которой равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(30, 1, this)">1) 1,6 кН;</button>
+        <button class="btn-option" onclick="handleChoice(30, 2, this)">2) 3,2 кН;</button>
+        <button class="btn-option" onclick="handleChoice(30, 3, this)">3) 3,6 кН;</button>
+        <button class="btn-option" onclick="handleChoice(30, 4, this)">4) 7,2 кН;</button>
+        <button class="btn-option" onclick="handleChoice(30, 5, this)">5) 14,4 кН.</button>
+      </div>
+      <div class="feedback-msg" id="fb-30"></div>
+      <button class="btn-solution-toggle" id="btn-sol-30" onclick="toggleSolution(30)">Показать Решение</button>
+      <div class="solution-box" id="sol-30">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          А20. Начальное расстояние между грузом и центром Земли $r_1 = R_{\text{З}}$. Конечное расстояние между ними $r_2 = R_{\text{З}} + h$. Используя закон всемирного тяготения, запишем два уравнения: $F_1 = G\frac{mM_{\text{З}}}{R_{\text{З}}^2}$ и $F_2 = G\frac{mM_{\text{З}}}{9R_{\text{З}}^2}$. Из этих уравнений следует, что $F_2 = \frac{F_1}{9} = 1,6\text{ кН}$.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function initMath() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    const testAnswers = {
+      1: 3,
+      2: 5,
+      3: 3,
+      4: 1,
+      5: 5,
+      6: 4,
+      7: 4,
+      8: 2,
+      9: 4,
+      10: 1,
+      11: 4,
+      12: 5,
+      26: 5,
+      27: 3,
+      28: 1,
+      29: 2,
+      30: 1
+    };
+
+    const calcAnswers = {
+      13: [12],
+      14: [30],
+      15: [40],
+      16: [22],
+      17: [96],
+      18: [20],
+      19: [16],
+      20: [24],
+      21: [80],
+      22: [4],
+      23: [21],
+      24: [25],
+      25: [10]
+    };
+
+    function handleChoice(taskId, selectedVal, btnEl) {
+      const parent = btnEl.closest('.options-grid');
+      const allBtns = parent.querySelectorAll('.btn-option');
+      allBtns.forEach(b => {
+        b.classList.remove('correct', 'incorrect');
+        b.disabled = true;
+      });
+
+      const correctVal = testAnswers[taskId];
+      const fb = document.getElementById('fb-' + taskId);
+      const solBtn = document.getElementById('btn-sol-' + taskId);
+
+      if (selectedVal === correctVal) {
+        btnEl.classList.add('correct');
+        fb.textContent = 'Правильно!';
+        fb.className = 'feedback-msg correct';
+      } else {
+        btnEl.classList.add('incorrect');
+        allBtns[correctVal - 1].classList.add('correct');
+        fb.textContent = 'Неверно, попробуйте еще раз или изучите решение.';
+        fb.className = 'feedback-msg incorrect';
+      }
+      solBtn.style.display = 'inline-block';
+    }
+
+    function parseVal(str) {
+      if (!str) return NaN;
+      let s = str.trim().toLowerCase();
+      s = s.replace(/,/g, '.');
+      s = s.replace(/·|\*|x|х/g, '*');
+      s = s.replace(/\s+/g, '');
+      s = s.replace(/10\^([+-]?\d+)/g, '1e$1');
+      if (s.includes('*')) {
+        let parts = s.split('*');
+        if (parts.length === 2) {
+          let a = parseFloat(parts[0]);
+          let b = parseFloat(parts[1]);
+          if (!isNaN(a) && !isNaN(b)) return a * b;
+        }
+      }
+      return parseFloat(s);
+    }
+
+    function validateCalculation(taskId) {
+      const inp = document.getElementById('inp-' + taskId);
+      const fb = document.getElementById('fb-' + taskId);
+      const solBtn = document.getElementById('btn-sol-' + taskId);
+      const targets = calcAnswers[taskId];
+      const val = parseVal(inp.value);
+
+      if (isNaN(val)) {
+        fb.textContent = 'Пожалуйста, введите числовое значение.';
+        fb.className = 'feedback-msg incorrect';
+        return;
+      }
+
+      let isCorrect = false;
+      for (let t of targets) {
+        let eps = Math.abs(t) * 0.03;
+        if (eps < 0.05) eps = 0.05;
+        if (Math.abs(val - t) <= eps) {
+          isCorrect = true;
+          break;
+        }
+      }
+
+      if (isCorrect) {
+        fb.textContent = 'Верно!';
+        fb.className = 'feedback-msg correct';
+      } else {
+        fb.textContent = 'Неверно. Проверьте расчеты.';
+        fb.className = 'feedback-msg incorrect';
+      }
+      solBtn.style.display = 'inline-block';
+    }
+
+    function toggleSolution(taskId) {
+      const sol = document.getElementById('sol-' + taskId);
+      const btn = document.getElementById('btn-sol-' + taskId);
+      if (!sol) return;
+      const isHidden = sol.style.display === 'none' || !sol.style.display;
+      sol.style.display = isHidden ? 'block' : 'none';
+      btn.textContent = isHidden ? 'Скрыть Решение' : 'Показать Решение';
+      if (isHidden && window.renderMathInElement) {
+        renderMathInElement(sol, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+  </script>
+</body>
+</html>
