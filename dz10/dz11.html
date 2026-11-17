@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Работа. Мощность</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="initMath()"></script>
+  <style>
+    :root {
+      --bg-main: #090a10;
+      --card-bg: rgba(18, 22, 34, 0.72);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --danger: #f43f5e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.6;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(99, 102, 241, 0.8);
+    }
+
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 40px 20px 80px 20px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    .task-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 32px;
+      backdrop-filter: blur(24px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      transition: border-color 0.2s ease;
+    }
+    .task-card:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    .task-header {
+      margin-bottom: 18px;
+    }
+    .task-badge {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 8px;
+      background: rgba(139, 92, 246, 0.15);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.25);
+    }
+
+    .task-text {
+      font-size: 1.02rem;
+      color: #e2e8f0;
+      margin-bottom: 22px;
+    }
+
+    .task-image-wrap {
+      text-align: center;
+      margin: 18px 0;
+    }
+    .task-image-wrap img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .btn-option {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      padding: 12px 18px;
+      border-radius: 12px;
+      text-align: left;
+      font-family: inherit;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-option:hover:not(:disabled) {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+    .btn-option.correct {
+      background: rgba(16, 185, 129, 0.2) !important;
+      border-color: #10b981 !important;
+      color: #6ee7b7 !important;
+    }
+    .btn-option.incorrect {
+      background: rgba(244, 63, 94, 0.2) !important;
+      border-color: #f43f5e !important;
+      color: #fda4af !important;
+    }
+
+    .calc-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .calc-row label {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+    .calc-input-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .calc-input {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .calc-input:focus {
+      border-color: #8b5cf6;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+
+    .btn-check {
+      background: var(--primary-gradient);
+      border: none;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .btn-check:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+    .btn-check:active {
+      transform: translateY(0);
+    }
+
+    .feedback-msg {
+      display: none;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .feedback-msg.correct {
+      display: block;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+    .feedback-msg.incorrect {
+      display: block;
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: #f87171;
+    }
+
+    .btn-solution-toggle {
+      display: none;
+      margin-top: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn-solution-toggle:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .solution-box {
+      display: none;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 20px;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+    .solution-title {
+      color: #a5b4fc;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+    }
+    .solution-content {
+      font-size: 0.98rem;
+      color: #cbd5e1;
+      line-height: 1.7;
+    }
+    .math-scroll {
+      overflow-x: auto;
+      max-width: 100%;
+      padding: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <div class="hero-badge">ДЗ</div>
+      <h1>Работа. Мощность</h1>
+      <p>Выберите вариант ответа или введите полученное числовое значение.</p>
+    </div>
+
+    <!-- Задача 1 -->
+    <div class="task-card" id="task-1">
+      <div class="task-header"><span class="task-badge">Задача 1</span></div>
+      <div class="task-text">Шайба массой $m = 200\text{ г}$ скользит по горизонтальной поверхности льда. Коэффициент трения между шайбой и льдом $\mu = 0,10$. Если силой трения, действующей на шайбу, совершена работа $A_{\text{тр}} = -10\text{ Дж}$, то модуль перемещения $\Delta r$ шайбы равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(1, 1, this)">1) 20 м;</button>
+        <button class="btn-option" onclick="handleChoice(1, 2, this)">2) 24 м;</button>
+        <button class="btn-option" onclick="handleChoice(1, 3, this)">3) 25 м;</button>
+        <button class="btn-option" onclick="handleChoice(1, 4, this)">4) 40 м;</button>
+        <button class="btn-option" onclick="handleChoice(1, 5, this)">5) 50 м.</button>
+      </div>
+      <div class="feedback-msg" id="fb-1"></div>
+      <button class="btn-solution-toggle" id="btn-sol-1" onclick="toggleSolution(1)">Показать Решение</button>
+      <div class="solution-box" id="sol-1">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Работа силы трения, действующая на шайбу, $A = F_{\text{тр}}\Delta r\cos 180^\circ$. Модуль силы трения $F_{\text{тр}} = \mu mg$. Из записанных уравнений найдем ответ: $\Delta r = 50\text{ м}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 2 -->
+    <div class="task-card" id="task-2">
+      <div class="task-header"><span class="task-badge">Задача 2</span></div>
+      <div class="task-text">Санки с сидящей на них девочкой равномерно тянут по горизонтальной поверхности снега с помощью легкой веревки, которая образует с вертикалью угол $\alpha = 30^\circ$. Модуль силы натяжения веревки $F = 80\text{ Н}$. Если модуль перемещения санок $\Delta r = 60\text{ м}$, то силой натяжения веревки совершена работа $A$, равная:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(2, 1, this)">1) 2,4 кДж;</button>
+        <button class="btn-option" onclick="handleChoice(2, 2, this)">2) 3,0 кДж;</button>
+        <button class="btn-option" onclick="handleChoice(2, 3, this)">3) 3,6 кДж;</button>
+        <button class="btn-option" onclick="handleChoice(2, 4, this)">4) 4,2 кДж;</button>
+        <button class="btn-option" onclick="handleChoice(2, 5, this)">5) 4,8 кДж.</button>
+      </div>
+      <div class="feedback-msg" id="fb-2"></div>
+      <button class="btn-solution-toggle" id="btn-sol-2" onclick="toggleSolution(2)">Показать Решение</button>
+      <div class="solution-box" id="sol-2">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Работа силы натяжения веревки $A = F\Delta r\cos(90^\circ - \alpha) = 2,4\text{ кДж}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 3 -->
+    <div class="task-card" id="task-3">
+      <div class="task-header"><span class="task-badge">Задача 3</span></div>
+      <div class="task-text">Груз массой $m = 1\text{ кг}$ из состояния покоя с помощью невесомой веревки подняли вертикально вверх с постоянным ускорением, модуль которого $a = 2\text{ }\frac{\text{м}}{\text{с}^2}$. Если силой натяжения веревки совершена работа $A = 48\text{ Дж}$, то груз поднимали в течение промежутка времени $\Delta t$, равного:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(3, 1, this)">1) 1 с;</button>
+        <button class="btn-option" onclick="handleChoice(3, 2, this)">2) 2 с;</button>
+        <button class="btn-option" onclick="handleChoice(3, 3, this)">3) 3 с;</button>
+        <button class="btn-option" onclick="handleChoice(3, 4, this)">4) 4 с;</button>
+        <button class="btn-option" onclick="handleChoice(3, 5, this)">5) 5 с.</button>
+      </div>
+      <div class="feedback-msg" id="fb-3"></div>
+      <button class="btn-solution-toggle" id="btn-sol-3" onclick="toggleSolution(3)">Показать Решение</button>
+      <div class="solution-box" id="sol-3">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Силой натяжения веревки совершена работа $A = F_{\text{н}}h$. Из второго закона Ньютона следует: $F_{\text{н}} - mg = ma$. Высота, на которую за время $\Delta t$ подняли груз, $h = \frac{a\Delta t^2}{2}$. Из записанных уравнений найдем ответ: $\Delta t = 2\text{ с}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 4 -->
+    <div class="task-card" id="task-4">
+      <div class="task-header"><span class="task-badge">Задача 4</span></div>
+      <div class="task-text">Материальная точка движется вдоль оси $Ox$. Если график зависимости проекции ее скорости $\upsilon_x$ на эту ось от времени $t$ имеет вид, представленный на рисунке 98, то работа $A$ равнодействующей всех сил, приложенных к этой точке, положительна в течение промежутка(-ов) времени:</div>
+      <div class="task-image-wrap">
+        <img src="image1.png" alt="Рис. 98" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+98';">
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(4, 1, this)">1) $\Delta t_1$; $\Delta t_5$;</button>
+        <button class="btn-option" onclick="handleChoice(4, 2, this)">2) $\Delta t_2$; $\Delta t_5$;</button>
+        <button class="btn-option" onclick="handleChoice(4, 3, this)">3) $\Delta t_3$;</button>
+        <button class="btn-option" onclick="handleChoice(4, 4, this)">4) $\Delta t_1$;</button>
+        <button class="btn-option" onclick="handleChoice(4, 5, this)">5) $\Delta t_4$; $\Delta t_5$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-4"></div>
+      <button class="btn-solution-toggle" id="btn-sol-4" onclick="toggleSolution(4)">Показать Решение</button>
+      <div class="solution-box" id="sol-4">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В течение промежутков времени $\Delta t_1$ и $\Delta t_2$ проекции равнодействующих сил на ось $Ox$ отрицательны, а в течение промежутков времени $\Delta t_4$ и $\Delta t_5$ — положительны. Проекции перемещений положительны на промежутках времени $\Delta t_1$, $\Delta t_5$ и отрицательны на остальных промежутках времени. Если проекция силы и проекция перемещения совпадают по знаку, то работа этой силы положительна. Поэтому работа равнодействующей всех сил, приложенных к материальной точке, положительна в течение промежутков времени $\Delta t_2$ и $\Delta t_5$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 5 -->
+    <div class="task-card" id="task-5">
+      <div class="task-header"><span class="task-badge">Задача 5</span></div>
+      <div class="task-text">Тело массой $m = 8,0\text{ кг}$ движется вдоль горизонтальной координатной оси $Ox$ под действием горизонтально направленной силы тяги, модуль которой $F = 34\text{ Н}$. Зависимость проекции скорости $\upsilon_x$ движения тела от времени $t$ имеет вид $\upsilon_x = A + Bt$, где $A = 5,0\text{ }\frac{\text{м}}{\text{с}}$, $B = 4,0\text{ }\frac{\text{м}}{\text{с}^2}$. Если силой трения, действующей на тело, совершена работа $A = -40\text{ Дж}$, то модуль перемещения $\Delta r$ тела равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(5, 1, this)">1) 12 м;</button>
+        <button class="btn-option" onclick="handleChoice(5, 2, this)">2) 15 м;</button>
+        <button class="btn-option" onclick="handleChoice(5, 3, this)">3) 17 м;</button>
+        <button class="btn-option" onclick="handleChoice(5, 4, this)">4) 20 м;</button>
+        <button class="btn-option" onclick="handleChoice(5, 5, this)">5) 25 м.</button>
+      </div>
+      <div class="feedback-msg" id="fb-5"></div>
+      <button class="btn-solution-toggle" id="btn-sol-5" onclick="toggleSolution(5)">Показать Решение</button>
+      <div class="solution-box" id="sol-5">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Из второго закона Ньютона найдем модуль силы трения: $F_{\text{тр}} = F - ma$, где $a = B = 4,0\text{ }\frac{\text{м}}{\text{с}^2}$. Работа силы трения $A = -F_{\text{тр}}\Delta r$. Из записанных уравнений найдем ответ: $\Delta r = 20\text{ м}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 6 -->
+    <div class="task-card" id="task-6">
+      <div class="task-header"><span class="task-badge">Задача 6</span></div>
+      <div class="task-text">Тело массой $m = 50\text{ г}$ движется по горизонтальной поверхности вдоль координатной оси $Ox$ под действием силы трения. На рисунке 99 представлен график зависимости проекции скорости $\upsilon_x$ движения тела от времени $t$. Работа $A$ силы трения за промежуток времени $\Delta t = 4,0\text{ с}$ равна:</div>
+      <div class="task-image-wrap">
+        <img src="image2.png" alt="Рис. 99" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+99';">
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(6, 1, this)">1) $-1,2\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(6, 2, this)">2) $-1,4\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(6, 3, this)">3) $-1,6\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(6, 4, this)">4) $-2,8\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(6, 5, this)">5) $-3,2\text{ Дж}$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-6"></div>
+      <button class="btn-solution-toggle" id="btn-sol-6" onclick="toggleSolution(6)">Показать Решение</button>
+      <div class="solution-box" id="sol-6">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          В соответствии с графиком (рис. 99) проекция ускорения тела $a_x = -2\text{ }\frac{\text{м}}{\text{с}^2}$. Модуль силы трения $F_{\text{тр}} = ma$. Проекция перемещения тела численно равна площади под данным графиком: $\Delta r_x = 16\text{ м}$. Работа силы трения $A = -F_{\text{тр}}\Delta r = -1,6\text{ Дж}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 7 -->
+    <div class="task-card" id="task-7">
+      <div class="task-header"><span class="task-badge">Задача 7</span></div>
+      <div class="task-text">Брусок массой $m = 500\text{ г}$ движется вдоль горизонтальной координатной оси $Ox$. Зависимость его координаты $x$ от времени $t$ имеет вид $x = A + Bt + Ct^2$, где $A = 4,0\text{ м}$, $B = 1,0\text{ }\frac{\text{м}}{\text{с}}$ и $C = 2,0\text{ }\frac{\text{м}}{\text{с}^2}$. Если на брусок действует сила трения, модуль которой $F_{\text{тр}} = 1,0\text{ Н}$, то за промежуток времени $\Delta t = 3,0\text{ с}$ (считая от начала отсчета времени) горизонтальной силой тяги, действующей на брусок, совершена работа $A$, равная:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(7, 1, this)">1) 20 Дж;</button>
+        <button class="btn-option" onclick="handleChoice(7, 2, this)">2) 38 Дж;</button>
+        <button class="btn-option" onclick="handleChoice(7, 3, this)">3) 42 Дж;</button>
+        <button class="btn-option" onclick="handleChoice(7, 4, this)">4) 63 Дж;</button>
+        <button class="btn-option" onclick="handleChoice(7, 5, this)">5) 80 Дж.</button>
+      </div>
+      <div class="feedback-msg" id="fb-7"></div>
+      <button class="btn-solution-toggle" id="btn-sol-7" onclick="toggleSolution(7)">Показать Решение</button>
+      <div class="solution-box" id="sol-7">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Работа силы тяги $A = F\Delta r$, где $F$ — модуль силы тяги, $\Delta r$ — модуль перемещения. На основании второго закона Ньютона $F - F_{\text{тр}} = ma$, где $a = 2C = 4\text{ }\frac{\text{м}}{\text{с}^2}$ — модуль ускорения. Модуль перемещения $\Delta r = \upsilon_0\Delta t + \frac{a\Delta t^2}{2}$, где $\upsilon_0 = B = 1\text{ }\frac{\text{м}}{\text{с}}$ — модуль начальной скорости движения. Из записанных уравнений найдем ответ: $A = 63\text{ Дж}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 8 -->
+    <div class="task-card" id="task-8">
+      <div class="task-header"><span class="task-badge">Задача 8</span></div>
+      <div class="task-text">Тело массой $m = 1,5\text{ кг}$ движется равноускоренно по горизонтальной поверхности вдоль координатной оси $Ox$ под действием горизонтальной силы, модуль которой $F = 5,0\text{ Н}$. На рисунке 100 показан график зависимости проекции перемещения тела $\Delta r_x$ от времени $t$ его движения. Начальная скорость тела равна нулю. Если модуль перемещения тела $\Delta r = 6,0\text{ м}$, то работа $A$, совершенная силой трения, равна:</div>
+      <div class="task-image-wrap">
+        <img src="image3.png" alt="Рис. 100" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+100';">
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(8, 1, this)">1) $-2,0\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(8, 2, this)">2) $-2,5\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(8, 3, this)">3) $-3,0\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(8, 4, this)">4) $-4,0\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(8, 5, this)">5) $-6,0\text{ Дж}$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-8"></div>
+      <button class="btn-solution-toggle" id="btn-sol-8" onclick="toggleSolution(8)">Показать Решение</button>
+      <div class="solution-box" id="sol-8">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Используя данные графика (рис. 100), определим модуль ускорения тела: $a = \frac{2\Delta r_x}{t^2} = 3\text{ }\frac{\text{м}}{\text{с}^2}$, где $t = 2\text{ с}$, $\Delta r_x = 6\text{ м}$. Из второго закона Ньютона найдем модуль силы трения: $F_{\text{тр}} = F - ma$. Работа, совершенная силой трения, $A = -F_{\text{тр}}\Delta r = -3,0\text{ Дж}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 9 -->
+    <div class="task-card" id="task-9">
+      <div class="task-header"><span class="task-badge">Задача 9</span></div>
+      <div class="task-text">Материальная точка движется вдоль оси $Ox$ под действием силы $\vec{F}$. График зависимости проекции силы $F_x$ на ось $Ox$ от координаты $x$ этой точки имеет вид, изображенный на рисунке 101. Наибольшую работу $A_{\max}$ сила $\vec{F}$ совершила на участке:</div>
+      <div class="task-image-wrap">
+        <img src="image4.png" alt="Рис. 101" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+101';">
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(9, 1, this)">1) $OA$;</button>
+        <button class="btn-option" onclick="handleChoice(9, 2, this)">2) $AB$;</button>
+        <button class="btn-option" onclick="handleChoice(9, 3, this)">3) $BC$;</button>
+        <button class="btn-option" onclick="handleChoice(9, 4, this)">4) $CD$;</button>
+        <button class="btn-option" onclick="handleChoice(9, 5, this)">5) $DE$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-9"></div>
+      <button class="btn-solution-toggle" id="btn-sol-9" onclick="toggleSolution(9)">Показать Решение</button>
+      <div class="solution-box" id="sol-9">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Так как работа, совершенная силой $\vec{F}$, численно равна площади под графиком $F_x(x)$ (рис. 101), то наибольшая работа этой силой совершена на участке $AB$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 10 -->
+    <div class="task-card" id="task-10">
+      <div class="task-header"><span class="task-badge">Задача 10</span></div>
+      <div class="task-text">На рисунке 102 представлен график зависимости модуля силы упругости $F_{\text{упр}}$, возникающей в деформированном упругом жгуте, от абсолютного удлинения $x$ жгута. Если удлинение жгута увеличить от $x_1 = 10\text{ см}$ до $x_2 = 20\text{ см}$, то работа $A_{\text{упр}}$, выполненная силой упругости, будет равна:</div>
+      <div class="task-image-wrap">
+        <img src="image5.png" alt="Рис. 102" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+102';">
+      </div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(10, 1, this)">1) $-9,0\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(10, 2, this)">2) $-4,5\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(10, 3, this)">3) $4,5\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(10, 4, this)">4) $6,0\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(10, 5, this)">5) $9,0\text{ Дж}$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-10"></div>
+      <button class="btn-solution-toggle" id="btn-sol-10" onclick="toggleSolution(10)">Показать Решение</button>
+      <div class="solution-box" id="sol-10">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Из графика (рис. 102) следует, что при деформациях жгута $x_1$ и $x_2$ модуль силы упругости $F_{\text{упр}1} = 30\text{ Н}$ и $F_{\text{упр}2} = 60\text{ Н}$ соответственно. Модуль работы силы упругости найдем, воспользовавшись графическим методом: $|A_{\text{упр}}| = \frac{F_{\text{упр}1} + F_{\text{упр}2}}{2}(x_2 - x_1) = 4,5\text{ Дж}$. Учитывая направление силы упругости, найдем ответ:
+          <div class="math-scroll">$$A_{\text{упр}} = -4,5\text{ Дж}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 11 -->
+    <div class="task-card" id="task-11">
+      <div class="task-header"><span class="task-badge">Задача 11</span></div>
+      <div class="task-text">Брусок массой $m = 800\text{ г}$ покоится на горизонтальной поверхности. К нему прикреплена легкая пружина жесткостью $k = 20\text{ }\frac{\text{Н}}{\text{м}}$. Если коэффициент трения между бруском и поверхностью $\mu = 0,20$, то для того чтобы сдвинуть с места брусок, растягивая пружину в горизонтальном направлении, надо совершить минимальную работу $A$, равную:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(11, 1, this)">1) 16 мДж;</button>
+        <button class="btn-option" onclick="handleChoice(11, 2, this)">2) 24 мДж;</button>
+        <button class="btn-option" onclick="handleChoice(11, 3, this)">3) 32 мДж;</button>
+        <button class="btn-option" onclick="handleChoice(11, 4, this)">4) 64 мДж;</button>
+        <button class="btn-option" onclick="handleChoice(11, 5, this)">5) 80 мДж.</button>
+      </div>
+      <div class="feedback-msg" id="fb-11"></div>
+      <button class="btn-solution-toggle" id="btn-sol-11" onclick="toggleSolution(11)">Показать Решение</button>
+      <div class="solution-box" id="sol-11">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Чтобы брусок начал двигаться, на него должна подействовать сила упругости растянутой пружины. При этом должно выполняться равенство $\mu mg = k\Delta l$, где $\Delta l$ — удлинение пружины. Минимальная работа, которую надо совершить, равна изменению потенциальной энергии пружины: $A = \frac{k(\Delta l)^2}{2} - 0$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$A = \frac{(\mu mg)^2}{2k} = 64\text{ мДж}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 12 -->
+    <div class="task-card" id="task-12">
+      <div class="task-header"><span class="task-badge">Задача 12</span></div>
+      <div class="task-text">Модуль силы тяги двигателя равномерно летящего самолета $F = 400\text{ кН}$. Если мощность двигателей самолета $P = 96,0\text{ МВт}$, то модуль скорости $\upsilon$ полета самолета равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(12, 1, this)">1) $150\text{ }\frac{\text{м}}{\text{с}}$;</button>
+        <button class="btn-option" onclick="handleChoice(12, 2, this)">2) $180\text{ }\frac{\text{м}}{\text{с}}$;</button>
+        <button class="btn-option" onclick="handleChoice(12, 3, this)">3) $200\text{ }\frac{\text{м}}{\text{с}}$;</button>
+        <button class="btn-option" onclick="handleChoice(12, 4, this)">4) $240\text{ }\frac{\text{м}}{\text{с}}$;</button>
+        <button class="btn-option" onclick="handleChoice(12, 5, this)">5) $250\text{ }\frac{\text{м}}{\text{с}}$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-12"></div>
+      <button class="btn-solution-toggle" id="btn-sol-12" onclick="toggleSolution(12)">Показать Решение</button>
+      <div class="solution-box" id="sol-12">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Модуль скорости движения самолета:
+          <div class="math-scroll">$$\upsilon = \frac{P}{F} = 240\text{ }\frac{\text{м}}{\text{с}}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 13 -->
+    <div class="task-card" id="task-13">
+      <div class="task-header"><span class="task-badge">Задача 13</span></div>
+      <div class="task-text">По горизонтальной поверхности вдоль координатной оси $Ox$ движется тело под действием горизонтальной силы тяги, модуль которой $F = 30\text{ Н}$. Зависимость проекции перемещения $\Delta r_x$ от времени $t$ имеет вид $\Delta r_x = At^2 + Bt$, где $A = 1,0\text{ }\frac{\text{м}}{\text{с}^2}$, $B = 2,0\text{ }\frac{\text{м}}{\text{с}}$. Если модуль перемещения тела $\Delta r = 15\text{ м}$, то средняя мощность $\langle P\rangle$ силы тяги при этом перемещении равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(13, 1, this)">1) 0,10 кВт;</button>
+        <button class="btn-option" onclick="handleChoice(13, 2, this)">2) 0,12 кВт;</button>
+        <button class="btn-option" onclick="handleChoice(13, 3, this)">3) 0,15 кВт;</button>
+        <button class="btn-option" onclick="handleChoice(13, 4, this)">4) 0,30 кВт;</button>
+        <button class="btn-option" onclick="handleChoice(13, 5, this)">5) 0,45 кВт.</button>
+      </div>
+      <div class="feedback-msg" id="fb-13"></div>
+      <button class="btn-solution-toggle" id="btn-sol-13" onclick="toggleSolution(13)">Показать Решение</button>
+      <div class="solution-box" id="sol-13">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Из уравнения $\Delta r_x = At^2 + Bt$ следует, что перемещение $\Delta\vec{r}$ ($\Delta r = 15\text{ м}$) тело совершило за время $t = 3\text{ с}$. Зная модуль средней скорости перемещения $\langle\upsilon\rangle = \frac{\Delta r}{t}$, найдем среднюю мощность силы тяги:
+          <div class="math-scroll">$$\langle P\rangle = F\langle\upsilon\rangle = 0,15\text{ кВт}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 14 -->
+    <div class="task-card" id="task-14">
+      <div class="task-header"><span class="task-badge">Задача 14</span></div>
+      <div class="task-text">Автомобиль массой $m = 3,0\text{ т}$ достигает скорости, модуль которой $\upsilon = 72\text{ }\frac{\text{км}}{\text{ч}}$, пройдя расстояние $s = 0,50\text{ км}$. Коэффициент трения $\mu = 0,010$. Работа $A$, которую совершает при этом двигатель автомобиля, равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(14, 1, this)">1) $1,5\cdot 10^5\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(14, 2, this)">2) $3,8\cdot 10^5\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(14, 3, this)">3) $6,0\cdot 10^5\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(14, 4, this)">4) $7,5\cdot 10^5\text{ Дж}$;</button>
+        <button class="btn-option" onclick="handleChoice(14, 5, this)">5) $1,5\cdot 10^6\text{ Дж}$.</button>
+      </div>
+      <div class="feedback-msg" id="fb-14"></div>
+      <button class="btn-solution-toggle" id="btn-sol-14" onclick="toggleSolution(14)">Показать Решение</button>
+      <div class="solution-box" id="sol-14">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Работу двигателя найдем по формуле $A = F_{\text{т}}s$. Для нахождения силы тяги воспользуемся основным уравнением динамики. На автомобиль действуют сила тяги $\vec{F}_{\text{т}}$, сила тяжести $m\vec{g}$, сила нормальной реакции $\vec{N}$ и сила трения $\vec{F}_{\text{тр}}$ (рис. 1.101):
+          <div class="math-scroll">$$m\vec{a} = \vec{F}_{\text{т}} + \vec{F}_{\text{тр}} + m\vec{g} + \vec{N}.$$</div>
+          В проекциях на оси $Ox$ и $Oy$:
+          <div class="math-scroll">$$ma = F_{\text{т}} - F_{\text{тр}},\text{ откуда } F_{\text{т}} = ma + F_{\text{тр}};$$</div>
+          <div class="math-scroll">$$0 = N - mg;\; N = mg.$$</div>
+          Так как $F_{\text{тр}} = \mu N$, то $F_{\text{тр}} = \mu mg$. Тогда
+          <div class="math-scroll">$$F_{\text{т}} = ma + \mu mg = m(a + \mu g).$$</div>
+          Для нахождения ускорения автомобиля воспользуемся кинематическим уравнением $\upsilon^2 - \upsilon_0^2 = 2as$, откуда $a = \frac{\upsilon^2}{2s}$ и $F_{\text{т}} = m\left(\frac{\upsilon^2}{2s} + \mu g\right)$.<br><br>
+          Искомая работа:
+          <div class="math-scroll">$$A = \frac{m}{2}(\upsilon^2 + 2\mu gs) = \frac{3,0\cdot 10^3\text{ кг}}{2}\left(20^2\text{ }\frac{\text{м}^2}{\text{с}^2} + 2\cdot 0,010\cdot 9,8\text{ }\frac{\text{м}}{\text{с}^2}\cdot 0,50\cdot 10^3\text{ м}\right) = 7,5\cdot 10^5\text{ Дж}.$$</div>
+          <div class="task-image-wrap">
+            <img src="image7.png" alt="Рис. 1.101" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+1.101';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 15 -->
+    <div class="task-card" id="task-15">
+      <div class="task-header"><span class="task-badge">Задача 15</span></div>
+      <div class="task-text">На горизонтальном участке пути длиной $s = 250\text{ м}$ модуль скорости поезда массой $m = 800\text{ т}$ увеличился от $\upsilon_1 = 10\text{ }\frac{\text{м}}{\text{с}}$ до $\upsilon_2 = 15\text{ }\frac{\text{м}}{\text{с}}$. Если отношение модуля силы сопротивления к модулю силы тяжести, действующих на поезд, $\frac{F_{\text{c}}}{mg} = 0,050$, то средняя мощность $\langle P\rangle$, развиваемая силой тяги поезда за время разгона, равна:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(15, 1, this)">1) 5,0 МВт;</button>
+        <button class="btn-option" onclick="handleChoice(15, 2, this)">2) 6,0 МВт;</button>
+        <button class="btn-option" onclick="handleChoice(15, 3, this)">3) 7,5 МВт;</button>
+        <button class="btn-option" onclick="handleChoice(15, 4, this)">4) 8,0 МВт;</button>
+        <button class="btn-option" onclick="handleChoice(15, 5, this)">5) 8,5 МВт.</button>
+      </div>
+      <div class="feedback-msg" id="fb-15"></div>
+      <button class="btn-solution-toggle" id="btn-sol-15" onclick="toggleSolution(15)">Показать Решение</button>
+      <div class="solution-box" id="sol-15">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Средняя мощность силы тяги $\langle P\rangle = F\cdot\frac{\upsilon_1 + \upsilon_2}{2}$. Из второго закона Ньютона следует: $F = F_{\text{c}} + ma$, где $F_{\text{c}} = 0,050mg$. Модуль ускорения $a = \frac{\upsilon_2^2 - \upsilon_1^2}{2s}$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$\langle P\rangle = 7,5\text{ МВт}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 16 -->
+    <div class="task-card" id="task-16">
+      <div class="task-header"><span class="task-badge">Задача 16</span></div>
+      <div class="task-text">Вертолет, масса которого $m = 6,0\text{ т}$, равномерно поднимается на высоту $h = 40\text{ м}$ за промежуток времени $\Delta t = 15\text{ с}$. Если двигатель вертолета потребляет мощность $P = 500\text{ кВт}$, то его коэффициент полезного действия $\eta$ равен:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(16, 1, this)">1) 10 %;</button>
+        <button class="btn-option" onclick="handleChoice(16, 2, this)">2) 24 %;</button>
+        <button class="btn-option" onclick="handleChoice(16, 3, this)">3) 32 %;</button>
+        <button class="btn-option" onclick="handleChoice(16, 4, this)">4) 36 %;</button>
+        <button class="btn-option" onclick="handleChoice(16, 5, this)">5) 40 %.</button>
+      </div>
+      <div class="feedback-msg" id="fb-16"></div>
+      <button class="btn-solution-toggle" id="btn-sol-16" onclick="toggleSolution(16)">Показать Решение</button>
+      <div class="solution-box" id="sol-16">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          КПД двигателя вертолета:
+          <div class="math-scroll">$$\eta = \frac{mgh}{P\Delta t}\cdot 100\% = 32\%.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 17 -->
+    <div class="task-card" id="task-17">
+      <div class="task-header"><span class="task-badge">Задача 17</span></div>
+      <div class="task-text">КПД двигателя квадрокоптера массой $m = 4,0\text{ кг}$ при горизонтальном полете со скоростью, модуль которой $\upsilon = 10\text{ }\frac{\text{м}}{\text{с}}$, составляет $\eta = 80\text{ }\%$. Если отношение модуля подъемной силы квадрокоптера к модулю силы лобового сопротивления $\frac{F_{\text{п}}}{F_{\text{с}}} = 5$, то мощность $P$ его двигателя составляет:</div>
+      <div class="options-grid">
+        <button class="btn-option" onclick="handleChoice(17, 1, this)">1) 10 Вт;</button>
+        <button class="btn-option" onclick="handleChoice(17, 2, this)">2) 20 Вт;</button>
+        <button class="btn-option" onclick="handleChoice(17, 3, this)">3) 40 Вт;</button>
+        <button class="btn-option" onclick="handleChoice(17, 4, this)">4) 80 Вт;</button>
+        <button class="btn-option" onclick="handleChoice(17, 5, this)">5) 0,10 кВт.</button>
+      </div>
+      <div class="feedback-msg" id="fb-17"></div>
+      <button class="btn-solution-toggle" id="btn-sol-17" onclick="toggleSolution(17)">Показать Решение</button>
+      <div class="solution-box" id="sol-17">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          КПД двигателя квадрокоптера $\eta = \frac{F\upsilon}{P}\cdot 100\%$, где $F$ — модуль его силы тяги. При равномерном горизонтальном полете квадрокоптера $F = F_{\text{с}}$ и $F_{\text{п}} = mg$. Учитывая, что $F_{\text{п}} = 5F_{\text{с}}$, из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$P = \frac{mg\upsilon}{5\eta}\cdot 100\% = 0,10\text{ кВт}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 18 -->
+    <div class="task-card" id="task-18">
+      <div class="task-header"><span class="task-badge">Задача 18</span></div>
+      <div class="task-text">Тело массой $m = 4,2\text{ кг}$ скользит с постоянной скоростью по горизонтальной поверхности под действием горизонтально направленной силы $\vec{F}$. Коэффициент трения тела о плоскость $\mu = 0,10$. Если силой $\vec{F}$ совершена работа $A = 105\text{ Дж}$, то модуль перемещения $\Delta r$ тела равен ... м.</div>
+      <div class="calc-row">
+        <label>Введите модуль перемещения в метрах ($\text{м}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-18">
+          <button class="btn-check" onclick="validateCalculation(18)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-18"></div>
+      <button class="btn-solution-toggle" id="btn-sol-18" onclick="toggleSolution(18)">Показать Решение</button>
+      <div class="solution-box" id="sol-18">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Работа $A = F\Delta r$. Из второго закона Ньютона следует: $F - F_{\text{тр}} = 0$. Модуль силы трения $F_{\text{тр}} = \mu mg$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$\Delta r = \frac{A}{\mu mg} = 25\text{ м}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 19 -->
+    <div class="task-card" id="task-19">
+      <div class="task-header"><span class="task-badge">Задача 19</span></div>
+      <div class="task-text">Лошадь тянет груженые сани массой $m = 200\text{ кг}$ с постоянной скоростью, модуль которой $\upsilon = 7,2\text{ }\frac{\text{км}}{\text{ч}}$, в течение промежутка времени $\Delta t = 10\text{ мин}$. Если коэффициент трения между полозьями саней и снегом $\mu = 0,040$, то работа $A$, совершенная силой тяги, направленной по движению саней, равна ... кДж.</div>
+      <div class="calc-row">
+        <label>Введите работу в килоджоулях ($\text{кДж}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-19">
+          <button class="btn-check" onclick="validateCalculation(19)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-19"></div>
+      <button class="btn-solution-toggle" id="btn-sol-19" onclick="toggleSolution(19)">Показать Решение</button>
+      <div class="solution-box" id="sol-19">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Из второго закона Ньютона следует: $F = F_{\text{тр}}$. Модуль силы трения $F_{\text{тр}} = \mu mg$. Модуль перемещения $\Delta r = \upsilon\Delta t$. Работа силы тяги:
+          <div class="math-scroll">$$A = F\Delta r = 96\text{ кДж}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 20 -->
+    <div class="task-card" id="task-20">
+      <div class="task-header"><span class="task-badge">Задача 20</span></div>
+      <div class="task-text">Санки тянут с постоянной скоростью, модуль которой $\upsilon = 9,0\text{ }\frac{\text{км}}{\text{ч}}$, по горизонтальной поверхности с помощью веревки, составляющей угол $\alpha = 45^\circ$ с горизонтом. Коэффициент трения между полозьями санок и поверхностью $\mu = 0,080$. Если силой натяжения веревки при перемещении санок, модуль которого $\Delta r = 8,1\text{ м}$, совершена работа $A = 72\text{ Дж}$, то модуль импульса $p$ санок равен ... $\frac{\text{кг}\cdot\text{м}}{\text{с}}$.</div>
+      <div class="calc-row">
+        <label>Введите модуль импульса санок в $\frac{\text{кг}\cdot\text{м}}{\text{с}}$:</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-20">
+          <button class="btn-check" onclick="validateCalculation(20)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-20"></div>
+      <button class="btn-solution-toggle" id="btn-sol-20" onclick="toggleSolution(20)">Показать Решение</button>
+      <div class="solution-box" id="sol-20">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Модуль импульса санок $p = m\upsilon$. Работа силы натяжения веревки $A = F\Delta r\cos\alpha$. На рисунке 476 показаны силы, действующие на санки. По второму закону Ньютона $\vec{F} + \vec{N} + m\vec{g} + \vec{F}_{\text{тр}} = \vec{0}$. В проекциях на координатные оси $Ox$ и $Oy$ получим: $F\cos\alpha - F_{\text{тр}} = 0$ и $N + F\sin\alpha - mg = 0$. Модуль силы трения $F_{\text{тр}} = \mu N$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$p = \frac{A\upsilon(1 + \mu\operatorname{tg}\alpha)}{\mu g\Delta r} = 30\text{ }\frac{\text{кг}\cdot\text{м}}{\text{с}}.$$</div>
+          <div class="task-image-wrap">
+            <img src="image8.png" alt="Рис. 476" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+476';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 21 -->
+    <div class="task-card" id="task-21">
+      <div class="task-header"><span class="task-badge">Задача 21</span></div>
+      <div class="task-text">Тело массой $m = 2\text{ кг}$ начинают из состояния покоя равноускоренно тянуть по горизонтальной плоскости, действуя нитью, составляющей угол $\alpha = 45^\circ$ с горизонтом. Коэффициент трения между телом и плоскостью $\mu = 0,2$. Если модуль ускорения тела $a = 0,4\text{ }\frac{\text{м}}{\text{с}^2}$, то за промежуток времени $\Delta t = 5\text{ с}$, считая от начала движения, сила натяжения нити совершила работу $A$, равную ... Дж.</div>
+      <div class="calc-row">
+        <label>Введите работу в джоулях ($\text{Дж}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-21">
+          <button class="btn-check" onclick="validateCalculation(21)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-21"></div>
+      <button class="btn-solution-toggle" id="btn-sol-21" onclick="toggleSolution(21)">Показать Решение</button>
+      <div class="solution-box" id="sol-21">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          По второму закону Ньютона получим: $F\cos\alpha - F_{\text{тр}} = ma$ и $N + F\sin\alpha - mg = 0$. Модуль силы трения $F_{\text{тр}} = \mu N$. Преобразовав записанные уравнения, найдем:
+          <div class="math-scroll">$$F = \frac{\mu mg + ma}{\cos\alpha + \mu\sin\alpha}.$$</div>
+          Модуль перемещения тела $\Delta r = \frac{a\Delta t^2}{2}$. Подставив $F$ и $\Delta r$ в формулу работы силы тяги $A = F\Delta r\cos\alpha$, найдем ответ: $A = 20\text{ Дж}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 22 -->
+    <div class="task-card" id="task-22">
+      <div class="task-header"><span class="task-badge">Задача 22</span></div>
+      <div class="task-text">Ящик поднимают по наклонной плоскости длиной $l = 10,0\text{ м}$ на высоту $h = 6,0\text{ м}$ с помощью силы, действующей вдоль наклонной плоскости. При этом силой трения совершается работа $A_{\text{тр}} = -320\text{ Дж}$. Если коэффициент трения $\mu = 0,20$, то масса $m$ ящика равна ... кг.</div>
+      <div class="calc-row">
+        <label>Введите массу ящика в килограммах ($\text{кг}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-22">
+          <button class="btn-check" onclick="validateCalculation(22)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-22"></div>
+      <button class="btn-solution-toggle" id="btn-sol-22" onclick="toggleSolution(22)">Показать Решение</button>
+      <div class="solution-box" id="sol-22">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Работа силы трения $A_{\text{тр}} = F_{\text{тр}}l\cos 180^\circ$. На рисунке 478 показаны силы, действующие на ящик. Из второго закона Ньютона в проекции на ось $Oy$ следует: $N - mg\cos\alpha = 0$. Модуль силы трения $F_{\text{тр}} = \mu N$. Из прямоугольного треугольника $\cos\alpha = \frac{\sqrt{l^2 - h^2}}{l}$. Из записанных уравнений найдем ответ: $m = 20\text{ кг}$.
+          <div class="task-image-wrap">
+            <img src="image9.png" alt="Рис. 478" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+478';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 23 -->
+    <div class="task-card" id="task-23">
+      <div class="task-header"><span class="task-badge">Задача 23</span></div>
+      <div class="task-text">Автомобиль массой $m = 1000\text{ кг}$ трогается с места и, двигаясь равноускоренно, проходит путь $l = 50\text{ м}$ за промежуток времени $\Delta t = 5,0\text{ с}$. Если сопротивлением пренебречь, то мощность $P$, которую развивает автомобиль в конце пятой секунды, равна ... кВт.</div>
+      <div class="calc-row">
+        <label>Введите мощность в киловаттах ($\text{кВт}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-23">
+          <button class="btn-check" onclick="validateCalculation(23)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-23"></div>
+      <button class="btn-solution-toggle" id="btn-sol-23" onclick="toggleSolution(23)">Показать Решение</button>
+      <div class="solution-box" id="sol-23">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Если сопротивлением пренебречь, то сила тяги автомобиля $\vec{F} = m\vec{a}$, где $\vec{a}$ — ускорение автомобиля, модуль которого найдем из формулы $l = \frac{a\Delta t^2}{2}$. Модуль скорости $\upsilon = a\Delta t$. С учетом записанных уравнений найдем мощность, которую развивает автомобиль в конце пятой секунды ($t = 5\text{ с}$), по формуле $P = F\upsilon$. Ответ: $P = 80\text{ кВт}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 24 -->
+    <div class="task-card" id="task-24">
+      <div class="task-header"><span class="task-badge">Задача 24</span></div>
+      <div class="task-text">Велосипедист начал равноускоренно и прямолинейно двигаться по горизонтальной дороге. В момент времени $t$ модуль его скорости стал $\upsilon = 36\text{ }\frac{\text{км}}{\text{ч}}$, а модуль перемещения составил $\Delta r = 20\text{ м}$. Масса велосипеда вместе с велосипедистом $m = 80\text{ кг}$. Если модуль силы сопротивления, действующей на велосипедиста, $F_{\text{c}} = 0,125mg$, то мгновенная мощность $P$, развиваемая велосипедистом, в момент времени $t$ равна ... кВт.</div>
+      <div class="calc-row">
+        <label>Введите мгновенную мощность в киловаттах ($\text{кВт}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-24">
+          <button class="btn-check" onclick="validateCalculation(24)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-24"></div>
+      <button class="btn-solution-toggle" id="btn-sol-24" onclick="toggleSolution(24)">Показать Решение</button>
+      <div class="solution-box" id="sol-24">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          По второму закону Ньютона $F - F_{\text{c}} = ma$. Модуль ускорения найдем из формулы $\Delta r = \frac{\upsilon^2}{2a}$. С учетом записанных уравнений найдем мощность, которую развивает велосипедист в момент времени $t$, по формуле $P = F\upsilon$. Ответ: $P = 3\text{ кВт}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 25 -->
+    <div class="task-card" id="task-25">
+      <div class="task-header"><span class="task-badge">Задача 25</span></div>
+      <div class="task-text">Самолет-амфибия Л42 массой $m = 1000\text{ кг}$ разгоняется из состояния покоя на полосе разгона длиной $l = 200\text{ м}$. Модуль взлетной скорости $\upsilon = 72\text{ }\frac{\text{км}}{\text{ч}}$. Если модуль силы сопротивления, действующей на самолет, $F_{\text{c}} = 200\text{ Н}$, то мощность $P$ двигателя самолета при его отрыве от взлетной полосы равна ... кВт.</div>
+      <div class="calc-row">
+        <label>Введите мощность двигателя в киловаттах ($\text{кВт}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-25">
+          <button class="btn-check" onclick="validateCalculation(25)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-25"></div>
+      <button class="btn-solution-toggle" id="btn-sol-25" onclick="toggleSolution(25)">Показать Решение</button>
+      <div class="solution-box" id="sol-25">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Мгновенная мощность $P = F\upsilon$. Модуль силы $F$ найдем из второго закона Ньютона: $F - F_{\text{c}} = ma$, где модуль ускорения $a = \frac{\upsilon^2}{2l}$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$P = \left(F_{\text{c}} + m\frac{\upsilon^2}{2l}\right)\upsilon = 24\text{ кВт}.$$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 26 -->
+    <div class="task-card" id="task-26">
+      <div class="task-header"><span class="task-badge">Задача 26</span></div>
+      <div class="task-text">Из шахты глубиной $h = 50\text{ м}$ на поверхность земли на тросе, масса каждого метра которого $\frac{m_0}{l} = 0,60\text{ }\frac{\text{кг}}{\text{м}}$, поднимают груз с постоянной скоростью. Если минимальная работа, совершенная силой тяги, приложенной к тросу, $A = 50\text{ кДж}$, то масса $m$ груза равна ... кг.</div>
+      <div class="calc-row">
+        <label>Введите массу груза в килограммах ($\text{кг}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-26">
+          <button class="btn-check" onclick="validateCalculation(26)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-26"></div>
+      <button class="btn-solution-toggle" id="btn-sol-26" onclick="toggleSolution(26)">Показать Решение</button>
+      <div class="solution-box" id="sol-26">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Масса троса $m_{\text{т}} = \frac{m_0}{l}h$. При подъеме груза длина троса, находящегося в шахте, уменьшается. Поэтому сила тяжести, действующая на трос, будет уменьшаться до нуля. Построив график зависимости силы тяги от координаты груза, запишем уравнение:
+          <div class="math-scroll">$$A = \frac{m_{\text{т}}gh + 2mgh}{2}.$$</div>
+          Отсюда найдем ответ: $m = 85\text{ кг}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 27 -->
+    <div class="task-card" id="task-27">
+      <div class="task-header"><span class="task-badge">Задача 27</span></div>
+      <div class="task-text">Санки с мальчиком общей массой $m = 45\text{ кг}$ выезжают с гладкого льда на шершавый лед, двигаясь по горизонтальной поверхности. Коэффициент трения между полозьями санок и шершавым льдом $\mu = 0,15$. Если к тому моменту времени, когда санки полностью окажутся на шершавом льду, силой трения будет совершена работа $A = -27\text{ Дж}$, то длина $l$ полозьев санок равна ... см.</div>
+      <div class="calc-row">
+        <label>Введите длину полозьев в сантиметрах ($\text{см}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-27">
+          <button class="btn-check" onclick="validateCalculation(27)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-27"></div>
+      <button class="btn-solution-toggle" id="btn-sol-27" onclick="toggleSolution(27)">Показать Решение</button>
+      <div class="solution-box" id="sol-27">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Модуль силы трения, действующей на полозья санок, выезжающих на шершавый лед, линейно увеличивается от нуля до $F_{\text{тр}} = \mu mg$. Модуль средней силы трения $\langle F_{\text{тр}}\rangle = \frac{\mu mg}{2}$. Работа силы трения $A = -\langle F_{\text{тр}}\rangle l$. Отсюда $l = 80\text{ см}$.
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 28 -->
+    <div class="task-card" id="task-28">
+      <div class="task-header"><span class="task-badge">Задача 28</span></div>
+      <div class="task-text">Брусок массой $m = 5,0\text{ кг}$ равноускоренно поднимают на высоту $h = 89\text{ см}$ по наклонной плоскости, прикладывая к бруску силу $\vec{F}$, направленную под углом $\beta$ к поверхности наклонной плоскости (рис. 104). Модуль ускорения бруска $a = 1,5\text{ }\frac{\text{м}}{\text{с}^2}$. Наклонная плоскость составляет угол $\alpha$ с горизонтом. Коэффициент трения между бруском и плоскостью $\mu = 0,15$. Если $\sin\alpha = 0,60$, а $\cos\beta = 0,80$, то сила $\vec{F}$ совершила работу $A$, равную ... Дж.</div>
+      <div class="task-image-wrap">
+        <img src="image6.png" alt="Рис. 104" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+104';">
+      </div>
+      <div class="calc-row">
+        <label>Введите работу в джоулях ($\text{Дж}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-28">
+          <button class="btn-check" onclick="validateCalculation(28)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-28"></div>
+      <button class="btn-solution-toggle" id="btn-sol-28" onclick="toggleSolution(28)">Показать Решение</button>
+      <div class="solution-box" id="sol-28">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          На рисунке 480 показаны силы, действующие на брусок. По второму закону Ньютона $m\vec{g} + \vec{F}_{\text{тр}} + \vec{N} + \vec{F} = m\vec{a}$. Это уравнение в проекциях на координатные оси $Ox$ и $Oy$ имеет вид $-mg\sin\alpha - F_{\text{тр}} + F\cos\beta = ma$ и $-mg\cos\alpha + N + F\sin\beta = 0$. Модуль силы трения $F_{\text{тр}} = \mu N$. Из записанных уравнений следует:
+          <div class="math-scroll">$$F = \frac{ma + \mu mg\cos\alpha + mg\sin\alpha}{\cos\beta + \mu\sin\beta},$$</div>
+          где $\cos\alpha = 0,80$ и $\sin\beta = 0,60$. Модуль перемещения бруска $\Delta r = \frac{h}{\sin\alpha}$. Работу силы $\vec{F}$ найдем по формуле $A = F\Delta r\cos\beta$. Из записанных уравнений найдем ответ:
+          <div class="math-scroll">$$A = \frac{(a + \mu g\cos\alpha + g\sin\alpha)mh\cos\beta}{(\cos\beta + \mu\sin\beta)\sin\alpha} = 58\text{ Дж}.$$</div>
+          <div class="task-image-wrap">
+            <img src="image10.png" alt="Рис. 480" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=%D0%A0%D0%B8%D1%81.+480';">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Задача 29 -->
+    <div class="task-card" id="task-29">
+      <div class="task-header"><span class="task-badge">Задача 29</span></div>
+      <div class="task-text">На горизонтальной поверхности лежит брусок массой $m = 2,0\text{ кг}$. К нему прикреплена легкая пружина жесткостью $k = 50\text{ }\frac{\text{Н}}{\text{м}}$. Коэффициент трения между бруском и поверхностью $\mu = 0,2$. Приложив к свободному концу недеформированной вначале пружины горизонтальную силу $\vec{F}$, брусок медленно переместили на расстояние $s = 46\text{ см}$. Работа $A$, совершенная силой $\vec{F}$, равна ... Дж.</div>
+      <div class="calc-row">
+        <label>Введите работу в джоулях ($\text{Дж}$):</label>
+        <div class="calc-input-group">
+          <input type="text" class="calc-input" id="inp-29">
+          <button class="btn-check" onclick="validateCalculation(29)">Проверить</button>
+        </div>
+      </div>
+      <div class="feedback-msg" id="fb-29"></div>
+      <button class="btn-solution-toggle" id="btn-sol-29" onclick="toggleSolution(29)">Показать Решение</button>
+      <div class="solution-box" id="sol-29">
+        <div class="solution-title">Решение:</div>
+        <div class="solution-content">
+          Чтобы брусок начал двигаться, на него должна действовать горизонтальная сила, модуль которой равен модулю максимальной силы трения покоя: $k\Delta l = \mu mg$. Следовательно, пружина должна растянуться на $\Delta l$. При растяжении пружины сила упругости линейно возрастала от нуля до $k\Delta l$. Поэтому работа силы упругости по растяжению пружины $A_1 = \frac{k\Delta l}{2}\cdot\Delta l$. При движении бруска сила упругости оставалась постоянной, поэтому ее работа $A_2 = k\Delta l\cdot s$. Общая работа:
+          <div class="math-scroll">$$A = \frac{k\Delta l^2}{2} + k\Delta l\cdot s.\text{ Подставив в последнее уравнение } \Delta l = \frac{\mu mg}{k},\text{ получим}$$</div>
+          <div class="math-scroll">$$A = \mu mg\left(\frac{\mu mg}{2k} + s\right) = 2\text{ Дж}.$$</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function initMath() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    const testAnswers = {
+      1: 5,
+      2: 1,
+      3: 2,
+      4: 2,
+      5: 4,
+      6: 3,
+      7: 4,
+      8: 3,
+      9: 2,
+      10: 2,
+      11: 4,
+      12: 4,
+      13: 3,
+      14: 4,
+      15: 3,
+      16: 3,
+      17: 5
+    };
+
+    const calcAnswers = {
+      18: [25],
+      19: [96],
+      20: [30],
+      21: [20],
+      22: [20],
+      23: [80],
+      24: [3],
+      25: [24],
+      26: [85],
+      27: [80, 0.8],
+      28: [58],
+      29: [2]
+    };
+
+    function handleChoice(taskId, selectedVal, btnEl) {
+      const parent = btnEl.closest('.options-grid');
+      const allBtns = parent.querySelectorAll('.btn-option');
+      allBtns.forEach(b => {
+        b.classList.remove('correct', 'incorrect');
+        b.disabled = true;
+      });
+
+      const correctVal = testAnswers[taskId];
+      const fb = document.getElementById('fb-' + taskId);
+      const solBtn = document.getElementById('btn-sol-' + taskId);
+
+      if (selectedVal === correctVal) {
+        btnEl.classList.add('correct');
+        fb.textContent = 'Правильно!';
+        fb.className = 'feedback-msg correct';
+      } else {
+        btnEl.classList.add('incorrect');
+        allBtns[correctVal - 1].classList.add('correct');
+        fb.textContent = 'Неверно, попробуйте еще раз или изучите решение.';
+        fb.className = 'feedback-msg incorrect';
+      }
+      solBtn.style.display = 'inline-block';
+    }
+
+    function parseVal(str) {
+      if (!str) return NaN;
+      let s = str.trim().toLowerCase();
+      s = s.replace(/,/g, '.');
+      s = s.replace(/·|\*|x|х/g, '*');
+      s = s.replace(/\s+/g, '');
+      s = s.replace(/10\^([+-]?\d+)/g, '1e$1');
+      if (s.includes('*')) {
+        let parts = s.split('*');
+        if (parts.length === 2) {
+          let a = parseFloat(parts[0]);
+          let b = parseFloat(parts[1]);
+          if (!isNaN(a) && !isNaN(b)) return a * b;
+        }
+      }
+      return parseFloat(s);
+    }
+
+    function validateCalculation(taskId) {
+      const inp = document.getElementById('inp-' + taskId);
+      const fb = document.getElementById('fb-' + taskId);
+      const solBtn = document.getElementById('btn-sol-' + taskId);
+      const targets = calcAnswers[taskId];
+      const val = parseVal(inp.value);
+
+      if (isNaN(val)) {
+        fb.textContent = 'Пожалуйста, введите числовое значение.';
+        fb.className = 'feedback-msg incorrect';
+        return;
+      }
+
+      let isCorrect = false;
+      for (let t of targets) {
+        let eps = Math.abs(t) * 0.03;
+        if (eps < 0.05) eps = 0.05;
+        if (Math.abs(val - t) <= eps) {
+          isCorrect = true;
+          break;
+        }
+      }
+
+      if (isCorrect) {
+        fb.textContent = 'Верно!';
+        fb.className = 'feedback-msg correct';
+      } else {
+        fb.textContent = 'Неверно. Проверьте расчеты.';
+        fb.className = 'feedback-msg incorrect';
+      }
+      solBtn.style.display = 'inline-block';
+    }
+
+    function toggleSolution(taskId) {
+      const sol = document.getElementById('sol-' + taskId);
+      const btn = document.getElementById('btn-sol-' + taskId);
+      if (!sol) return;
+      const isHidden = sol.style.display === 'none' || !sol.style.display;
+      sol.style.display = isHidden ? 'block' : 'none';
+      btn.textContent = isHidden ? 'Скрыть Решение' : 'Показать Решение';
+      if (isHidden && window.renderMathInElement) {
+        renderMathInElement(sol, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+  </script>
+</body>
+</html>
