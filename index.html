@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#090a10" />
   <title>Выбор задания • Физика</title>
 
   <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
@@ -15,7 +16,7 @@
       --bg-main: #090a10;
       --surface-card: rgba(18, 22, 34, 0.72);
       --surface-elevated: rgba(26, 32, 48, 0.85);
-      --surface-input: rgba(13, 16, 26, 0.7);
+      --surface-badge: rgba(99, 102, 241, 0.14);
       --text-main: #f8fafc;
       --text-sub: #94a3b8;
       --text-muted: #64748b;
@@ -29,9 +30,9 @@
       --radius-xl: 24px;
       --radius-lg: 16px;
       --radius-md: 12px;
-      --radius-sm: 8px;
 
       --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      --mono: "JetBrains Mono", monospace;
       --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -45,17 +46,27 @@
     body {
       font-family: var(--font);
       background-color: var(--bg-main);
-      background-image:
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 20%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
-        radial-gradient(at 50% 80%, rgba(236, 72, 153, 0.07) 0px, transparent 50%);
-      background-attachment: fixed;
       color: var(--text-main);
-      line-height: 1.6;
+      line-height: 1.5;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
+      overflow-x: clip;
+      position: relative;
+    }
+
+    /* Фиксированный фон без лагов на мобильных устройствах */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.14) 0px, transparent 50%),
+        radial-gradient(at 100% 20%, rgba(139, 92, 246, 0.11) 0px, transparent 50%),
+        radial-gradient(at 50% 85%, rgba(236, 72, 153, 0.08) 0px, transparent 50%);
     }
 
     /* Шапка */
@@ -63,11 +74,11 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(9, 10, 16, 0.75);
+      background: rgba(9, 10, 16, 0.78);
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border-bottom: 1px solid var(--border);
-      padding: 18px 24px;
+      padding: 16px 20px;
       text-align: center;
     }
 
@@ -82,30 +93,30 @@
 
     /* Главный контейнер */
     main {
-      max-width: 680px;
+      max-width: 620px;
       width: 100%;
-      margin: auto;
-      padding: 40px 20px;
+      margin: 0 auto;
+      padding: 36px 20px 56px;
     }
 
     .hero {
       text-align: center;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
     }
 
     .hero h1 {
-      font-size: 44px;
+      font-size: 42px;
       font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1.15;
       background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .hero p {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 500;
       color: var(--text-sub);
     }
@@ -118,7 +129,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      padding: 36px;
+      padding: 28px;
       text-align: center;
     }
 
@@ -135,31 +146,34 @@
       border: 1px solid rgba(99, 102, 241, 0.25);
       padding: 4px 14px;
       border-radius: 30px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
-    /* Сетка кнопок */
+    /* Вертикальный список длинных кнопок */
     .buttons-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-
-    /* Кнопка-ссылка */
-    .nav-btn {
       display: flex;
       flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Длинная кнопка-ссылка */
+    .nav-btn {
+      width: 100%;
+      display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      gap: 14px;
       text-decoration: none;
-      padding: 38px 20px;
+      padding: 16px 20px;
       background: var(--surface-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      transition: all 0.35s var(--ease-spring);
+      transition: transform 0.3s var(--ease-spring), border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
       position: relative;
       overflow: hidden;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
     .nav-btn::before {
@@ -168,57 +182,145 @@
       inset: 0;
       background: var(--accent-gradient);
       opacity: 0;
-      transition: opacity 0.35s var(--ease-spring);
+      transition: opacity 0.3s var(--ease-spring);
       z-index: 0;
     }
 
-    .nav-btn:hover {
-      transform: translateY(-5px);
-      border-color: rgba(255, 255, 255, 0.25);
-      box-shadow: 0 20px 35px -10px var(--accent-glow);
-    }
-
-    .nav-btn:hover::before {
-      opacity: 0.12;
+    .nav-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
 
     .nav-btn:active {
-      transform: scale(0.97);
+      transform: scale(0.985);
+      border-color: rgba(99, 102, 241, 0.45);
+    }
+
+    .btn-left {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
     }
 
     .btn-num {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      background: var(--surface-badge);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      font-size: 20px;
+      font-weight: 800;
+      font-family: var(--mono);
+      color: #e0e7ff;
+      transition: transform 0.3s var(--ease-spring), background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .btn-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+    }
+
+    .btn-arrow {
       position: relative;
       z-index: 1;
-      font-size: 44px;
-      font-weight: 800;
-      color: #ffffff;
-      line-height: 1;
-      font-family: var(--font);
-      background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      transition: transform 0.35s var(--ease-spring);
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: var(--text-muted);
+      transition: transform 0.3s var(--ease-spring), color 0.3s ease;
     }
 
-    .nav-btn:hover .btn-num {
-      transform: scale(1.1);
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    @media (max-width: 500px) {
-      .buttons-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
+    /* Эффекты наведения только для устройств с мышью (не залипают на телефонах) */
+    @media (hover: hover) and (pointer: fine) {
+      .nav-btn:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.22);
+        box-shadow: 0 14px 28px -10px var(--accent-glow);
       }
 
-      .nav-btn {
-        padding: 28px 16px;
+      .nav-btn:hover::before {
+        opacity: 0.12;
+      }
+
+      .nav-btn:hover .btn-num {
+        transform: scale(1.06);
+        background: var(--accent-gradient);
+        border-color: transparent;
+        color: #ffffff;
+      }
+
+      .nav-btn:hover .btn-arrow {
+        transform: translateX(4px);
+        color: #ffffff;
+      }
+    }
+
+    /* Адаптация под мобильные экраны */
+    @media (max-width: 520px) {
+      header {
+        padding: 14px 16px;
+      }
+
+      main {
+        padding: 24px 14px 40px;
+      }
+
+      .hero {
+        margin-bottom: 24px;
       }
 
       .hero h1 {
-        font-size: 34px;
+        font-size: 32px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      .menu-card {
+        padding: 20px 14px;
+        border-radius: 20px;
+      }
+
+      .card-label {
+        margin-bottom: 18px;
+      }
+
+      .buttons-grid {
+        gap: 10px;
+      }
+
+      .nav-btn {
+        padding: 13px 14px;
+        border-radius: 14px;
+        gap: 12px;
+      }
+
+      .btn-left {
+        gap: 12px;
+      }
+
+      .btn-num {
+        width: 38px;
+        height: 38px;
+        font-size: 17px;
+        border-radius: 10px;
+      }
+
+      .btn-title {
+        font-size: 15px;
       }
     }
   </style>
@@ -227,13 +329,13 @@
 
   <!-- Шапка -->
   <header>
-    <div class="header-title">Домашнее задание</div>
+    <div class="header-title">@physarea.ct</div>
   </header>
 
   <main>
     <div class="hero">
       <h1>Физика</h1>
-      <p>Выберите номер задания для перехода:</p>
+      <p></p>
     </div>
 
     <div class="menu-card">
@@ -241,46 +343,104 @@
 
       <div class="buttons-grid">
         <a href="dz1/dz3.html" class="nav-btn">
-          <span class="btn-num">1</span>
+          <div class="btn-left">
+            <span class="btn-num">1</span>
+            <span class="btn-title">...</span>
+          </div>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
 
-        <!-- Кнопка 2 -> dz3.html -->
         <a href="dz2/dz2.html" class="nav-btn">
-          <span class="btn-num">2</span>
+          <div class="btn-left">
+            <span class="btn-num">2</span>
+            <span class="btn-title">...</span>
+          </div>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
 
         <a href="dz3/dz4.html" class="nav-btn">
-          <span class="btn-num">3</span>
+          <div class="btn-left">
+            <span class="btn-num">3</span>
+            <span class="btn-title">...</span>
+          </div>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
 
         <a href="dz4/dz5.html" class="nav-btn">
-          <span class="btn-num">4</span>
+          <div class="btn-left">
+            <span class="btn-num">4</span>
+            <span class="btn-title">...</span>
+          </div>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
 
         <a href="dz5/dz6.html" class="nav-btn">
-          <span class="btn-num">5</span>
+          <div class="btn-left">
+            <span class="btn-num">5</span>
+            <span class="btn-title">...</span>
+          </div>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
 
         <a href="dz6/dz7.html" class="nav-btn">
-        <span class="btn-num">6</span>
+          <div class="btn-left">
+            <span class="btn-num">6</span>
+            <span class="btn-title">...</span>
+          </div>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
-        
+
         <a href="dz7/dz8.html" class="nav-btn">
-        <span class="btn-num">7</span>
+          <div class="btn-left">
+            <span class="btn-num">7</span>
+            <span class="btn-title">...</span>
+          </div>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
-        
+
         <a href="dz8/dz9.html" class="nav-btn">
-        <span class="btn-num">8</span>
+          <div class="btn-left">
+            <span class="btn-num">8</span>
+            <span class="btn-title">...</span>
+          </div>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
 
         <a href="dz9/dz10.html" class="nav-btn">
-        <span class="btn-num">9</span>
+          <div class="btn-left">
+            <span class="btn-num">9</span>
+            <span class="btn-title">...</span>
+          </div>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
 
         <a href="dz10/dz11.html" class="nav-btn">
-        <span class="btn-num">10</span>
+          <div class="btn-left">
+            <span class="btn-num">10</span>
+            <span class="btn-title">Работа. Мощность</span>
+          </div>
+          <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
         </a>
-        
       </div>
     </div>
   </main>
